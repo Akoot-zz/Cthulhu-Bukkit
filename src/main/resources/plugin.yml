@@ -1,0 +1,57 @@
+name: Cthulhu
+version: ${project.version}
+description: Basic Plugin.........
+
+author: Akoot
+authors: []
+website: http://akoot-exe.tumblr.com
+main: com.Akoot.cthulhu.Cthulhu
+softdepend: [CombatTag, HealthBar, MassiveCore, Factions, SkinsRestorer]
+load: STARTUP
+
+commands:
+    chat-format:
+        description: Changes your Chat Format
+        aliases: [chatformat, cf]
+    make:
+        description: Makes someone do or say something
+        aliases: [mk, mke, mak, saydo]
+    friend:
+        description: Add, remove, and interact with friends
+        aliases: [fr, friends]
+    cthulhu:
+        description: Default command
+        aliases: [ct, cth, cthu, cthul, cthulh]
+    uuid:
+       description: Get the Unique ID of a player
+       alieses: [uniqueid, uid]
+    raw:
+       description: Send a raw message with fancy json functionality
+       aliases: []
+    rename:
+       description: Renames the item in hand
+       alieses: [rn]
+    setlore:
+        description: Sets your item's lore (description)
+        alieses: [sl, lore]
+    sign:
+        description: Signs a book
+        alieses: [forge, sgn]
+    say:
+        description: Say something with a cool title
+        aliases: [srvr]
+    setmotd:
+        description: Set the MOTD you see in the server browser
+        aliases: [motdedit]
+    playtime:
+        description: Get playtime
+        aliases: [play-time]
+    nick:
+        description: Faggot
+        aliases: [nn]
+    ip:
+        description: Faggot
+        aliases: [ip-adress]
+    write:
+        description: FFF
+        aliases: [wr]
