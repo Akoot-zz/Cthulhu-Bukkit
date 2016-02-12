@@ -46,12 +46,12 @@ public class CommandMake extends Command
 				}
 				else
 				{
-					sendMessage("&cInvalid subcommand: &6" + args[1]);
+					sendMessage("Can't make &7" + target.getName() + " " + this.color +  args[1] + " " + args[2]);
 				}
 			}
 			else
 			{
-				sendMessage("&cPlayer not found: &6" + args[0]);
+				sendPlayerNull(args[0]);
 			}
 		}
 		else

@@ -2,8 +2,6 @@ package com.Akoot.cthulhu.commands;
 
 import org.bukkit.entity.Player;
 
-import com.Akoot.cthulhu.utils.ChatUtil;
-
 
 public class CommandChatFormat extends Command
 {
@@ -12,20 +10,32 @@ public class CommandChatFormat extends Command
 		this.color = "&a";
 		this.name = "chat-format";
 		this.permission = "cthulhu.chat-format";
+		this.arg = "<format>";
 	}
-	
+
 	public void sendUsage()
 	{
-		sendMessage("Usage: &f/cf [player] <format>");
-		sendMessage("&7&oType &2/cf help &7&ofor help with variables");
+		sendMessage("Usage:");
+		sendMessage("&f/cf &7&oShows what your current chat format looks like");
+		sendMessage("&f/cf <player> &7&oShows what a player's chat format looks like");
+		sendMessage("&f/cf <format> &7&oChanges your chat format");
+		sendMessage("&f/cf -p:<player> <format> &7&oSpecify a player with -p:<player> and change their chat format");
+		sendMessage("Type &f/cf help " + this.color + "for help with variables");
 	}
-	
-	private void sendFormat()
+
+	private void sendFormat(Player player)
 	{
-		sendMessage("&dYour current chat format:");
-		sender.sendMessage(plugin.config.getString("default-chat-format"));
+		sendMessage("&f" + (player == (Player)sender ? "your" : player.getName() + "'s") + this.color + " chat format:");
+		if(plugin.getPlayerDataFile(player).has("chat-format"))
+		{
+			sendMessage(plugin.getPlayerDataFile(player).getString("chat-format"), true);
+		}
+		else
+		{
+			sendMessage(plugin.config.getString("default-chat-format"), true);
+		}
 	}
-	
+
 	private void sendVars()
 	{
 		sendMessage("&7Username: &f{username}, {uname}, {name}, {n}");
@@ -39,7 +49,7 @@ public class CommandChatFormat extends Command
 		sendMessage("&6Group: &f{group}, {g}");
 		sendMessage("&6Group prefix: &f{group-prefix}, {p}");
 	}
-	
+
 	@Override
 	public void onCommand()
 	{
@@ -48,42 +58,35 @@ public class CommandChatFormat extends Command
 			Player player = (Player) sender;
 			if(args.length == 0)
 			{
-				sendFormat();
+				sendFormat(player);
 			}
 			else if(args.length == 1)
 			{
 				if(args[0].equalsIgnoreCase("reset"))
 				{
-					plugin.getPlayerDataFile(player).set("chat-format", plugin.config.get("default-chat-format"));
-					sendMessage("&o&7Your chat format was reset");
+					plugin.getPlayerDataFile(player).set("chat-format", plugin.config.getString("default-chat-format"));
+					sendMessage("&7Your chat format was reset");
 				}
-				else if(args[0].matches("(\\?|h|help)"))
+				else if(args[0].matches("(\\?|h|help|vars|v)"))
 				{
 					sendVars();
 				}
 				else
 				{
-					@SuppressWarnings("deprecation")
-					Player target = player.getServer().getPlayer(args[0]);
+					Player target = plugin.getPlayer(args[0], true);
 					if(target != null)
 					{
-						if(plugin.getPlayerDataFile(target).has("chat-format"))
-						{
-							sendMessage("&6" + target.getName() + "'s chat format:");
-							player.sendMessage(plugin.getPlayerDataFile(target).getString("chat-format"));
-						}
-						else
-						{
-							sendMessage("&6" + target.getName() + "'s chat format:");
-							player.sendMessage(plugin.getConfig().getString("default-chat-format"));
-						}
+						sendFormat(target);
+					}
+					else
+					{
+						sendPlayerNull(args[0]);
 					}
 				}
 			}
 			else if(args.length >= 2)
 			{
-				@SuppressWarnings("deprecation")
-				Player target = player.getServer().getPlayer(args[0]);
+				Player target = plugin.getPlayer(args[0].substring(3), true);
 				int index = 1;
 				if(target == null)
 				{
@@ -97,7 +100,7 @@ public class CommandChatFormat extends Command
 				}
 				fmt = fmt.trim();
 				plugin.getPlayerDataFile(target).set("chat-format", fmt);
-				target.sendMessage(ChatUtil.color("&bYour chat format was set to: &f" + fmt));
+				sendFormat(target);
 			}
 			else
 			{
@@ -112,8 +115,7 @@ public class CommandChatFormat extends Command
 			}
 			else if(args.length >= 2)
 			{
-				@SuppressWarnings("deprecation")
-				Player target = sender.getServer().getPlayer(args[0]);
+				Player target = plugin.getPlayer(args[0].substring(3), true);
 				if(target != null)
 				{
 					String fmt = "";
@@ -123,11 +125,11 @@ public class CommandChatFormat extends Command
 					}
 					fmt = fmt.trim();
 					plugin.getPlayerDataFile(target).set("chat-format", fmt);
-					target.sendMessage("Your chat format was set to: &f" + fmt);
+					sendFormat(target);
 				}
 				else
 				{
-					sendMessage("&cPlayer not found: &f" + args[0]);
+					sendPlayerNull(args[0]);
 				}
 			}
 			else

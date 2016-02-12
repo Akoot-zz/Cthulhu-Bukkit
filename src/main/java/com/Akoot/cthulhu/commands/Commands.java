@@ -70,6 +70,11 @@ public class Commands implements CommandExecutor
 				}
 				else if(sender instanceof BlockCommandSender)
 				{
+					if(command.playerOnly)
+					{
+						command.sendMessage("Sorry, /" + command.name + " can only be used by players");
+						return false;
+					}
 					BlockCommandSender block  = (BlockCommandSender) sender;
 					System.out.println(String.format("Command block at %s,%s,%s issued server command: /%s", block.getBlock().getX(), block.getBlock().getY(), block.getBlock().getZ(), command.name + " " + ChatUtil.toString(args)));
 				}

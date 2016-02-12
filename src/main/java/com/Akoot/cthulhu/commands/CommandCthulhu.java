@@ -12,10 +12,12 @@ public class CommandCthulhu extends Command
 	@Override
 	public void onCommand()
 	{
-		sendMessage("Plugin commands&f:");
 		for(Command cmd: plugin.commands.commands)
 		{
-			sendMessage(cmd.color + cmd.name + ": &f" + cmd.permission);
+			sendMessage("&7[" + cmd.color + cmd.name + "&7]");
+			cmd.sender = sender;
+			sendMessage(cmd.color + "Description: &f" + plugin.getCommand(cmd.name).getDescription());
+			cmd.sendUsage();
 		}
 	}
 }

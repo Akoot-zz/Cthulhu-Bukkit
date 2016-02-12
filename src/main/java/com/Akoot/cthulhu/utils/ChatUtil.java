@@ -32,7 +32,7 @@ public class ChatUtil
 		suggest,
 		help,
 	}
-	
+
 	public static String itemName(ItemStack item)
 	{
 		return item.getType().name().toLowerCase().replace("_", " ");
@@ -40,49 +40,36 @@ public class ChatUtil
 	public static String getTime(int time)
 	{
 		int minutes = time % 60;
+		int hours = time / 60;
+		int days = hours / 24;
+		int weeks = days / 7;
+		int months = weeks / 4;
+		int years = months / 12;
 		String message = "";
 		List<String> args = new ArrayList<String>();
 
-		if(time >= 525600)
+		if(years > 0)
 		{
-			int hours = time / 60;
-			int days = hours / 24;
-			int weeks = days / 7;
-			int months = weeks / 4;
-			int years = months / 12;
 			args.add(years + toPlural(years, " year"));
 		}
-		if(time >= 43800)
+		if(months > 0)
 		{
-			int hours = time / 60;
-			int days = hours / 24;
-			int weeks = days / 7;
-			int months = weeks / 4;
 			args.add(months + toPlural(months, " month"));
 		}
-		if(time >= 10080)
+		if(weeks > 0)
 		{
-			int hours = time / 60;
-			int days = hours / 24;
-			int weeks = days / 7;
 			args.add(weeks + toPlural(weeks, " week"));
 		}
-		if(time >= 1440)
+		if(days > 0)
 		{
-			int hours = time / 60;
-			int days = hours / 24;
 			args.add(days + toPlural(days, " day"));
 		}
-		if (time >= 60)
+		if (hours > 0)
 		{
-			int hours = time / 60;
 			args.add(hours + toPlural(hours, " hour"));
 		}
-		if (time < 60)
-		{
-			args.add(minutes + toPlural(minutes, " minute"));
-		}
 		args.add(minutes + toPlural(minutes, " minute"));
+		message = toString(args);
 		return message;
 	}
 	public static String rainbow(String msg)
@@ -124,11 +111,12 @@ public class ChatUtil
 
 	public static String toString(List<String> args)
 	{
-		String[] args2 = new String[args.size()];
-		for(int i = 0; i > args.size(); i++)
+		String msg = "";
+		for(String s: args)
 		{
-			args2[i] = args.get(i);
+			msg += s + " ";
 		}
-		return toString(args2);
+		msg = msg.trim();
+		return msg;
 	}
 }

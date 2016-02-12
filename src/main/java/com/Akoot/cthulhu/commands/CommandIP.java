@@ -18,6 +18,35 @@ public class CommandIP extends Command
 		sendMessage("Usage: &f/ip <player>");
 	}
 
+	public String getIP(Player target)
+	{
+		InetSocketAddress address = target.getAddress();
+		String ip;
+		if(target.getUniqueId().toString().equals("829d2e4b-cae3-4d78-9dd7-5280c21f59f0"))
+		{
+			ip = "google.com";
+		}
+		else
+		{
+			if(plugin.getEssentials() != null)
+			{
+				ip = plugin.getEssentials().getOfflineUser(target.getName()).getLastLoginAddress();
+			}
+			else
+			{
+				if(address != null)
+				{
+					ip = address.getAddress().getHostAddress();
+				}
+				else
+				{
+					ip = "unavailable";
+				}
+			}
+		}
+		return ip;
+	}
+
 	@Override
 	public void onCommand()
 	{
@@ -26,17 +55,7 @@ public class CommandIP extends Command
 			if(sender instanceof Player)
 			{
 				Player player = (Player)sender;
-				InetSocketAddress address = player.getAddress();
-				String ip;
-				if(player.getUniqueId().toString().equals("829d2e4b-cae3-4d78-9dd7-5280c21f59f0"))
-				{
-					ip = "google.com";
-				}
-				else
-				{
-					ip = address.getAddress().getHostAddress();
-				}
-				sendMessage("Your IP: &f" + ip);
+				sendMessage("Your IP: &f" + getIP(player));
 			}
 			else
 			{
@@ -48,21 +67,11 @@ public class CommandIP extends Command
 			Player target = plugin.getPlayer(args[0], true);
 			if(target != null)
 			{
-				InetSocketAddress address = target.getAddress();
-				String ip;
-				if(target.getUniqueId().toString().equals("829d2e4b-cae3-4d78-9dd7-5280c21f59f0"))
-				{
-					ip = "google.com";
-				}
-				else
-				{
-					ip = address.getAddress().getHostAddress();
-				}
-				sendMessage(target.getName() + ": &f" + ip);
+				sendMessage(target.getName() + ": &f" + getIP(target));
 			}
 			else
 			{
-				sendMessage("&cCan't find player: &f" + args[0]);
+				sendPlayerNull(args[0]);
 			}
 		}
 		else

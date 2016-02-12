@@ -107,7 +107,7 @@ public class PlayerEvents implements Listener
 		ItemStack item = e.getItem().getItemStack();
 		updateItemMoney(item);
 	}
-	
+
 	@EventHandler
 	public void onCraft(CraftItemEvent e)
 	{

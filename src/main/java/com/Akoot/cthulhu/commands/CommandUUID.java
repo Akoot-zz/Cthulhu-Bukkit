@@ -2,7 +2,6 @@ package com.Akoot.cthulhu.commands;
 
 import org.bukkit.entity.Player;
 
-@SuppressWarnings("deprecation")
 public class CommandUUID extends Command
 {
 	public CommandUUID()
@@ -33,14 +32,14 @@ public class CommandUUID extends Command
 			{
 				for(String a: args)
 				{
-					Player target = player.getServer().getPlayer(a);
+					Player target = plugin.getPlayer(a, true);
 					if(target != null)
 					{
 						sendMessage(target.getName() + ": &f" + target.getUniqueId().toString());
 					}
 					else
 					{
-						sendMessage("&cPlayer not found: &6" + a);
+						sendPlayerNull(a);
 					}
 				}
 			}
@@ -59,14 +58,14 @@ public class CommandUUID extends Command
 			{
 				for(String a: args)
 				{
-					Player target = sender.getServer().getPlayer(a);
+					Player target = plugin.getPlayer(a, true);
 					if(target != null)
 					{
 						sendMessage(target.getName() + ": &f" + target.getUniqueId().toString());
 					}
 					else
 					{
-						sendMessage("&cPlayer not found: &6" + a);
+						sendPlayerNull(a);
 					}
 				}
 			}

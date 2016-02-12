@@ -30,9 +30,9 @@ public class CommandWrite extends Command
 				Sign sign = (Sign) block.getState();
 				if(args.length == 0)
 				{
-					if(sign.getLines().length > 0)
+					for(String line: sign.getLines())
 					{
-						for(String line: sign.getLines())
+						if(!line.isEmpty())
 						{
 							sendMessage(line);
 						}
@@ -40,14 +40,21 @@ public class CommandWrite extends Command
 				}
 				else
 				{
-					String[] a = ChatUtil.toString(args).split(",\\s");
-					int i = 0;
-					for(String s: a)
+					String[] a = ChatUtil.toString(args).split(", ");
+					if(a.length < 5)
 					{
-						i++;
-						sign.setLine(i, ChatUtil.color(s));
+						int i = 0;
+						for(String s: a)
+						{
+							sign.setLine(i, ChatUtil.color(s.replace(",,", ",")));
+							i++;
+						}
+						sign.update();
 					}
-					sign.update();
+					else
+					{
+						sendMessage("Too many lines");
+					}
 				}
 			}
 			else

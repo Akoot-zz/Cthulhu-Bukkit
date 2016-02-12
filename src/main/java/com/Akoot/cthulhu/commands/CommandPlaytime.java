@@ -28,15 +28,14 @@ public class CommandPlaytime extends Command
 				}
 				else if(args.length == 1)
 				{
-					@SuppressWarnings("deprecation")
-					Player target = player.getServer().getPlayer(args[0]);
+					Player target = plugin.getPlayer(args[0], true);
 					if(target != null)
 					{
 						sendPlaytime(target);
 					}
 					else
 					{
-						sendMessage("&cPlayer not found: &6" + args[0]);
+						sendPlayerNull(args[0]);
 					}
 				}
 				else
@@ -48,15 +47,14 @@ public class CommandPlaytime extends Command
 			{
 				if(args.length == 1)
 				{
-					@SuppressWarnings("deprecation")
-					Player target = sender.getServer().getPlayer(args[0]);
+					Player target = plugin.getPlayer(args[0]);
 					if(target != null)
 					{
 						sendPlaytime(target);
 					}
 					else
 					{
-						sendMessage("&cPlayer not found: &6" + args[0]);
+						sendPlayerNull(args[0]);
 					}
 				}
 				else

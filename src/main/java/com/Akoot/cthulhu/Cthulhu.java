@@ -135,10 +135,13 @@ public class Cthulhu extends JavaPlugin
 				{
 					for(OfflinePlayer op: getServer().getOfflinePlayers())
 					{
-						String name = op.getName();
-						if(name.equals(find) || name.startsWith(find) || name.equalsIgnoreCase(find))// || p.getDisplayName().startsWith(find) || p.getDisplayName().equalsIgnoreCase(find))
+						if(getEssentials().getOfflineUser(op.getName()) != null)
 						{
-							//nothing
+							Player p = getEssentials().getOfflineUser(op.getName()).getBase();
+							if(p.getUniqueId().equals(find) || p.getName().startsWith(find) || p.getName().equalsIgnoreCase(find) || p.getDisplayName().startsWith(find) || p.getDisplayName().equalsIgnoreCase(find))
+							{
+								player = p;
+							}
 						}
 					}
 				}
