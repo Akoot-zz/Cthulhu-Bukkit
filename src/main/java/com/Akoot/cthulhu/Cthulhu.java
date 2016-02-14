@@ -12,6 +12,7 @@ import com.Akoot.cthulhu.commands.Commands;
 import com.Akoot.cthulhu.events.PlayerEvents;
 import com.Akoot.cthulhu.events.ServerEvents;
 import com.Akoot.cthulhu.utils.CthFile;
+import com.Akoot.cthulhu.utils.TaskScheduler;
 import com.earth2me.essentials.Essentials;
 
 import net.milkbowl.vault.chat.Chat;
@@ -27,6 +28,7 @@ public class Cthulhu extends JavaPlugin
 	public CthFile config;
 	public File dataFolder;
 	public File playerFolder;
+	public TaskScheduler scheduler;
 
 	public Logger log;
 
@@ -37,6 +39,9 @@ public class Cthulhu extends JavaPlugin
 		playerEvents = new PlayerEvents(this);
 		serverEvents = new ServerEvents(this);
 		commands = new Commands(this);
+		scheduler = new TaskScheduler(this);
+		
+		scheduler.schedule(playerEvents, "updatePlaytime", 60);
 
 		dataFolder = getDataFolder();
 		playerFolder = new File(getDataFolder(), "userdata");

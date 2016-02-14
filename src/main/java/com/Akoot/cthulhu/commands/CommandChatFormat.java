@@ -10,18 +10,17 @@ public class CommandChatFormat extends Command
 		this.color = "&a";
 		this.name = "chat-format";
 		this.permission = "cthulhu.chat-format";
-		this.arg = "<format>";
 	}
 
-	public void sendUsage()
-	{
-		sendMessage("Usage:");
-		sendMessage("&f/cf &7&oShows what your current chat format looks like");
-		sendMessage("&f/cf <player> &7&oShows what a player's chat format looks like");
-		sendMessage("&f/cf <format> &7&oChanges your chat format");
-		sendMessage("&f/cf -p:<player> <format> &7&oSpecify a player with -p:<player> and change their chat format");
-		sendMessage("Type &f/cf help " + this.color + "for help with variables");
-	}
+//	public void sendUsage()
+//	{
+//		sendMessage("Usage:");
+//		sendMessage("&f/cf &7&oShows what your current chat format looks like");
+//		sendMessage("&f/cf <player> &7&oShows what a player's chat format looks like");
+//		sendMessage("&f/cf <format> &7&oChanges your chat format");
+//		sendMessage("&f/cf -p:<player> <format> &7&oSpecify a player with -p:<player> and change their chat format");
+//		sendMessage("Type &f/cf help " + this.color + "for help with variables");
+//	}
 
 	private void sendFormat(Player player)
 	{

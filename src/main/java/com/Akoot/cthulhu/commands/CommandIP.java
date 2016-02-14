@@ -4,6 +4,8 @@ import java.net.InetSocketAddress;
 
 import org.bukkit.entity.Player;
 
+import com.Akoot.cthulhu.utils.RandomUtil;
+
 public class CommandIP extends Command
 {
 	public CommandIP()
@@ -15,7 +17,7 @@ public class CommandIP extends Command
 
 	public void sendUsage()
 	{
-		sendMessage("Usage: &f/ip <player>");
+		sendMessage("/ip <player>", "/ip " + RandomUtil.randomPlayer());
 	}
 
 	public String getIP(Player target)
@@ -55,7 +57,7 @@ public class CommandIP extends Command
 			if(sender instanceof Player)
 			{
 				Player player = (Player)sender;
-				sendMessage("Your IP: &f" + getIP(player));
+				suggest("Your IP: &f" + getIP(player), getIP(player));
 			}
 			else
 			{
@@ -67,7 +69,7 @@ public class CommandIP extends Command
 			Player target = plugin.getPlayer(args[0], true);
 			if(target != null)
 			{
-				sendMessage(target.getName() + ": &f" + getIP(target));
+				suggest(target.getName() + ": &f" + getIP(target), getIP(target));
 			}
 			else
 			{

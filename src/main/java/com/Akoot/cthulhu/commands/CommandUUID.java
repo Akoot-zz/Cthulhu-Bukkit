@@ -26,7 +26,7 @@ public class CommandUUID extends Command
 			Player player = (Player)sender;
 			if(args.length == 0)
 			{
-				sendMessage("Your UUID: &f" + player.getUniqueId());
+				suggest("Your UUID: &f" + player.getUniqueId(), player.getUniqueId() + "");
 			}
 			else if(args.length >= 1)
 			{
@@ -35,7 +35,7 @@ public class CommandUUID extends Command
 					Player target = plugin.getPlayer(a, true);
 					if(target != null)
 					{
-						sendMessage(target.getName() + ": &f" + target.getUniqueId().toString());
+						suggest(target.getName() + ": &f" + target.getUniqueId(), target.getUniqueId() + "");
 					}
 					else
 					{
@@ -61,7 +61,7 @@ public class CommandUUID extends Command
 					Player target = plugin.getPlayer(a, true);
 					if(target != null)
 					{
-						sendMessage(target.getName() + ": &f" + target.getUniqueId().toString());
+						suggest(target.getName() + ": &f" + target.getUniqueId().toString(), target.getUniqueId() + "");
 					}
 					else
 					{

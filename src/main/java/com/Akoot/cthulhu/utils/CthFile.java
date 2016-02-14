@@ -37,6 +37,7 @@ public class CthFile extends File
 	public String getString(String key)
 	{
 		String s = String.valueOf(get(key));
+		if(s.equals("null")) s = "";
 		return s;
 	}
 

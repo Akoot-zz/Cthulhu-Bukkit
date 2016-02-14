@@ -37,6 +37,7 @@ public class Commands implements CommandExecutor
 		commands.add(new CommandNick());
 		commands.add(new CommandIP());
 		commands.add(new CommandWrite());
+		commands.add(new CommandChatColor());
 		
 		for(Command cmd: commands)
 		{

@@ -1,6 +1,12 @@
 package com.Akoot.cthulhu.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 public class RandomUtil
 {
@@ -23,6 +29,21 @@ public class RandomUtil
 	{
 		int i = random.nextInt((b - a) + 1) + a;
 		return i;
+	}
+	
+	public static String randomPlayer()
+	{
+		List<String> names = new ArrayList<String>();
+		for(Player p: Bukkit.getServer().getOnlinePlayers())
+		{
+			names.add(p.getName());
+		}
+		for(OfflinePlayer p: Bukkit.getServer().getOfflinePlayers())
+		{
+			names.add(p.getName());
+		}
+		if(names.isEmpty()) names.add("<player>");
+		return names.get(random.nextInt(names.size() - 1));
 	}
 	
 	public static String randomString(int range)

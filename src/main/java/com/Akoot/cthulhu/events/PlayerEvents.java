@@ -36,6 +36,15 @@ public class PlayerEvents implements Listener
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 		ess = plugin.getEssentials();
 	}
+	
+	public void updatePlaytime()
+	{
+		for(Player player: plugin.getServer().getOnlinePlayers())
+		{
+			int time = plugin.getPlayerDataFile(player).getInt("playtime");
+			plugin.getPlayerDataFile(player).set("playtime", time + 1);
+		}
+	}
 
 	public void updateItemMoney(ItemStack item)
 	{
@@ -123,6 +132,11 @@ public class PlayerEvents implements Listener
 		String format = "";
 		String msg = e.getMessage();
 
+		if(msg.startsWith("\\") || msg.startsWith("./"))
+		{
+			msg = msg.substring(1);
+		}
+
 		if(plugin.hasPlayerData(player))
 		{
 			player.setDisplayName(ChatUtil.color(plugin.getPlayerDataFile(player).getString("displayname")));
@@ -166,6 +180,9 @@ public class PlayerEvents implements Listener
 		format = format.replaceAll("\\{displayname\\}|\\{dname\\}|\\{nick\\}|\\{nickname\\}", player.getDisplayName());
 		format = format.replaceAll("\\{username\\}|\\{name\\}|\\{n\\}|\\{uname\\}", "%1\\$s");
 		format = format.replaceAll("\\{message\\}|\\{msg\\}|\\{m\\}|\\{txt\\}", "%2\\$s");
+
+		if(plugin.getPlayerDataFile(player).has("chat-color"))
+		msg = "&" + plugin.getPlayerDataFile(player).getString("chat-color") + msg;
 
 		if(plugin.hasPlugin("Factions"))
 		{
@@ -215,6 +232,7 @@ public class PlayerEvents implements Listener
 			{
 				plugin.getPlayerDataFile(player).set("username", player.getName());
 			}
+			plugin.getPlayerDataFile(player).set("playtime", 0);
 		}
 		if(player.hasPlayedBefore())
 		{

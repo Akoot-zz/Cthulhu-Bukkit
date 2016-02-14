@@ -3,6 +3,8 @@ package com.Akoot.cthulhu.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
@@ -15,28 +17,53 @@ public class ChatUtil
 
 	public static String color(String s)
 	{
-		s = s.replaceAll("&h", "&" + colors[random.nextInt(colors.length - 1)]);
+		s = s.replace("&h", "&" + colors[random.nextInt(colors.length - 1)]);
 		if(s.contains("&x"))
 		{
-			s = s.substring(0, s.indexOf("&x")) + rainbow(s.substring(s.indexOf("&x") + 2));
+			String toColor = getRegex("&x[^&]*", s);
+			s = s.replace(toColor, rainbow(toColor.substring(2)));
 		}
+//		if(s.contains("&x"))
+//		{
+//			s = s.substring(0, s.indexOf("&x")) + rainbow(s.substring(s.indexOf("&x") + 2));
+//		}
 		return ChatColor.translateAlternateColorCodes('&', s);
 	}
-
-	public enum Tags
+	
+	public static String getRegex(String regex, String data)
 	{
-		tip,
-		link,
-		url,
-		suggestion,
-		suggest,
-		help,
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(data);
+		if(matcher.find())
+		{
+			data = matcher.group(0);
+		}
+		return data;
+	}
+	
+	public static String randomColor()
+	{
+		return "&" + allColors().get(random.nextInt(allColors().size() - 1));
+	}
+	
+	public static List<String> allColors()
+	{
+		List<String> colors = new ArrayList<String>();
+		for(ChatColor c: ChatColor.values())
+		{
+			colors.add("&" + Character.toString(c.getChar()));
+		}
+		colors.add("&h");
+		colors.add("&x");
+		return colors;
 	}
 
 	public static String itemName(ItemStack item)
 	{
 		return item.getType().name().toLowerCase().replace("_", " ");
 	}
+	
+	
 	public static String getTime(int time)
 	{
 		int minutes = time % 60;
@@ -91,6 +118,17 @@ public class ChatUtil
 			i++;
 		}
 		return rainbow;
+	}
+	
+	public static String toListString(List<String> args)
+	{
+		String msg = "";
+		for(String s: args)
+		{
+			msg += s + "\n";
+		}
+		msg = msg.trim();
+		return msg;
 	}
 
 	public static String toString(Object[] args)

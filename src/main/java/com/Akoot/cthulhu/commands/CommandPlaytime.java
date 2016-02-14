@@ -3,7 +3,6 @@ package com.Akoot.cthulhu.commands;
 import org.bukkit.entity.Player;
 
 import com.Akoot.cthulhu.utils.ChatUtil;
-import com.rogue.playtime.Playtime;
 
 public class CommandPlaytime extends Command
 {
@@ -17,65 +16,56 @@ public class CommandPlaytime extends Command
 	@Override
 	public void onCommand()
 	{
-		if(plugin.getServer().getPluginManager().getPlugin("Playtime") != null)
+		if(sender instanceof Player)
 		{
-			if(sender instanceof Player)
+			Player player = (Player)sender;
+			if(args.length == 0)
 			{
-				Player player = (Player)sender;
-				if(args.length == 0)
+				sendPlaytime(player);
+			}
+			else if(args.length == 1)
+			{
+				Player target = plugin.getPlayer(args[0], true);
+				if(target != null)
 				{
-					sendPlaytime(player);
-				}
-				else if(args.length == 1)
-				{
-					Player target = plugin.getPlayer(args[0], true);
-					if(target != null)
-					{
-						sendPlaytime(target);
-					}
-					else
-					{
-						sendPlayerNull(args[0]);
-					}
+					sendPlaytime(target);
 				}
 				else
 				{
-					sendMessage("Usage: &f/playtime [player]");
+					sendPlayerNull(args[0]);
 				}
 			}
 			else
 			{
-				if(args.length == 1)
-				{
-					Player target = plugin.getPlayer(args[0]);
-					if(target != null)
-					{
-						sendPlaytime(target);
-					}
-					else
-					{
-						sendPlayerNull(args[0]);
-					}
-				}
-				else
-				{
-					sendMessage("Usage: &f/playtime [player]");
-				}
+				sendMessage("Usage: &f/playtime [player]");
 			}
 		}
 		else
 		{
-			sendMessage("&cError: &fPlaytime plugin not installed.");
-			sendMessage("Click here to install");
+			if(args.length == 1)
+			{
+				Player target = plugin.getPlayer(args[0]);
+				if(target != null)
+				{
+					sendPlaytime(target);
+				}
+				else
+				{
+					sendPlayerNull(args[0]);
+				}
+			}
+			else
+			{
+				sendMessage("Usage: &f/playtime [player]");
+			}
 		}
+
 	}
-	
+
 	public void sendPlaytime(Player player)
 	{
-		String name = player.getName();
-		Playtime pt = (Playtime) plugin.getServer().getPluginManager().getPlugin("Playtime");
-		int time = pt.getDataManager().getDataHandler().getValue("playtime", name);
-		
+		int time = plugin.getPlayerDataFile(player).getInt("playtime");
+
 		sendMessage("Playtime: &f" + ChatUtil.getTime(time));
 	}
 }

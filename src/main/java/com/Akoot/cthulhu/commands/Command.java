@@ -5,6 +5,8 @@ import org.bukkit.command.CommandSender;
 import com.Akoot.cthulhu.Cthulhu;
 import com.Akoot.cthulhu.utils.ChatUtil;
 
+import mkremins.fanciful.FancyMessage;
+
 public class Command
 {
 	public Cthulhu plugin;
@@ -13,7 +15,7 @@ public class Command
 	public String permission;
 	public CommandSender sender;
 	public boolean playerOnly = false;
-	public String arg = "";
+	public FancyMessage message;
 
 	public String[] args;
 
@@ -22,7 +24,11 @@ public class Command
 
 	public void sendUsage()
 	{
-		sendMessage(this.color + "Usage: &f/" + name);
+		message = new FancyMessage(ChatUtil.color(color + "Usage: "));
+		message.then("/" + name)
+		.suggest("/" + name)
+		.tooltip(ChatUtil.color(color + "Suggest: /" + name))
+		.send(sender);
 	}
 	
 	public void sendPlayerNull(String arg)
@@ -34,8 +40,43 @@ public class Command
 	{
 		if(sender != null)
 		{
-			sender.sendMessage(ChatUtil.color(this.color + msg));
+			sender.sendMessage(ChatUtil.color(color + msg));
 		}
+	}
+	
+	public void sendMessage(String msg, String hover)
+	{
+		message = new FancyMessage(ChatUtil.color(msg));
+		message.tooltip(ChatUtil.color(hover))
+		.send(sender);
+	}
+	
+	public void sendUsage(String msg)
+	{
+		sendUsage(msg, msg);
+	}
+	
+	public void suggest(String msg, String suggestion)
+	{
+		message = new FancyMessage(ChatUtil.color(color + msg));
+		message.suggest(suggestion)
+		.send(sender);
+	}
+	
+	public void sendCommand(String msg, String command)
+	{
+		message = new FancyMessage(ChatUtil.color(color + msg));
+		message.command(command)
+		.send(sender);
+	}
+	
+	public void sendUsage(String msg, String suggest)
+	{
+		message = new FancyMessage(ChatUtil.color(color + "Usage: &f"));
+		message.then(ChatUtil.color(msg))
+		.tooltip(ChatUtil.color(color + "Suggest: " + msg))
+		.suggest(suggest)
+		.send(sender);
 	}
 	
 	public void sendMessage(String msg, boolean stripColor)
