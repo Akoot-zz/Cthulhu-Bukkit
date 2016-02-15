@@ -31,6 +31,21 @@ public class Command
 		.send(sender);
 	}
 	
+	public void noPermission(String use)
+	{
+		sendMessage("&4You do not have permission to " + use);
+	}
+	
+	public void sendError(String error)
+	{
+		sendMessage("&4Error: &c");
+	}
+	
+	public void noPermission()
+	{
+		noPermission("use: &c/" + name);
+	}
+	
 	public void sendPlayerNull(String arg)
 	{
 		sendMessage("Can't find player: &7&o" + arg);

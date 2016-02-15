@@ -1,20 +1,20 @@
 package com.Akoot.cthulhu.events;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,106 +23,64 @@ import com.Akoot.cthulhu.Cthulhu;
 import com.Akoot.cthulhu.utils.ChatUtil;
 import com.Akoot.cthulhu.utils.CthFile;
 import com.Akoot.cthulhu.utils.RandomUtil;
-import com.earth2me.essentials.Essentials;
 
 public class PlayerEvents implements Listener
 {
 	private Cthulhu plugin;
-	private Essentials ess;
 
 	public PlayerEvents(Cthulhu instance)
 	{
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
-		ess = plugin.getEssentials();
 	}
-	
+
 	public void updatePlaytime()
 	{
 		for(Player player: plugin.getServer().getOnlinePlayers())
 		{
-			int time = plugin.getPlayerDataFile(player).getInt("playtime");
-			plugin.getPlayerDataFile(player).set("playtime", time + 1);
-		}
-	}
-
-	public void updateItemMoney(ItemStack item)
-	{
-		if(ess != null)
-		{
-			if((item != null) && (item.getType() != Material.AIR))
+			int time = plugin.getPlayerDataFile(player).getInt("playtime") + 1;
+			plugin.getPlayerDataFile(player).set("playtime", time);
+			if(time == 10 || time == 720 || time == 10080)
 			{
-				ItemMeta meta = item.getItemMeta();
-				List<String> lore = (meta.getLore() != null ? meta.getLore(): new ArrayList<String>());
-				String price = "&8<unknown price>";
-				if(ess.getWorth().getPrice(item) != null) 
-				{
-					price = "&7Base price: &a$" + String.format("%.2f",ess.getWorth().getPrice(item));
-					if(price.endsWith(".00"))
-					{
-						price = price.substring(0, price.indexOf("."));
-					}
-				}
-				price = ChatUtil.color(price);
-				if(meta.getLore() != null)
-				{
-					for(String s: meta.getLore())
-					{
-						String l = ChatColor.stripColor(s);
-						if(l.startsWith("Price: $") || l.equals("<unknown price>"))
-						{
-							if(!s.equals(price))
-							{
-								lore.remove(s);
-							}
-						}
-					}
-				}
-				if(!lore.contains(price))
-				{
-					lore.add(price);
-				}
-				meta.setLore(lore);
-				item.setItemMeta(meta);
+				player.sendMessage(ChatUtil.color("&dYou have unlocked a new rank!"));
+				player.sendMessage(ChatUtil.color("&fType &d/playtime &fto redeem it"));
 			}
 		}
 	}
 
-	public void updateInventoryMoney(Player player)
-	{
-		if(plugin.getEssentials() != null)
-		{
-			Inventory inventory = player.getInventory();
-			if(inventory.getContents().length > 0)
-			{
-				for(ItemStack item: inventory.getContents())
-				{
-					updateItemMoney(item);
-				}
-			}
-		}
-	}
-
-	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent e)
-	{
-		Player player = (Player) e.getPlayer();
-		updateInventoryMoney(player);
-	}
-
-	@EventHandler
-	public void onItemPickup(PlayerPickupItemEvent e)
-	{
-		ItemStack item = e.getItem().getItemStack();
-		updateItemMoney(item);
-	}
-
-	@EventHandler
-	public void onCraft(CraftItemEvent e)
-	{
-		ItemStack item = e.getCurrentItem();
-		updateItemMoney(item);
-	}
+//	public void removeLore(Inventory inventory)
+//	{
+//		for(ItemStack item: inventory.getContents())
+//		{
+//			if((item != null) && (item.getType() != Material.AIR))
+//			{
+//				ItemMeta meta = item.getItemMeta();
+//				meta.setLore(new ArrayList<String>());
+//				item.setItemMeta(meta);
+//			}
+//		}
+//	}
+//
+//	@EventHandler
+//	public void onInteract(PlayerInteractEvent e)
+//	{
+//		Player player = e.getPlayer();
+//		if(e.getAction() == Action.LEFT_CLICK_BLOCK)
+//		{
+//			Block block = e.getClickedBlock();
+//			if(block.getType() == Material.CHEST)
+//			{
+//				Chest chest = (Chest) block.getState();
+//				removeLore(chest.getInventory());
+//				player.sendMessage("cleared the chest. it is now empty. sorry.");
+//			}
+//			else
+//			{
+//				removeLore(player.getInventory());
+//				player.sendMessage("your inventory was tasty");
+//			}
+//		}
+//	}
 
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e)
@@ -182,7 +140,7 @@ public class PlayerEvents implements Listener
 		format = format.replaceAll("\\{message\\}|\\{msg\\}|\\{m\\}|\\{txt\\}", "%2\\$s");
 
 		if(plugin.getPlayerDataFile(player).has("chat-color"))
-		msg = "&" + plugin.getPlayerDataFile(player).getString("chat-color") + msg;
+			msg = "&" + plugin.getPlayerDataFile(player).getString("chat-color") + msg;
 
 		if(plugin.hasPlugin("Factions"))
 		{
@@ -225,6 +183,7 @@ public class PlayerEvents implements Listener
 			playerFile.create();
 			playerFile.set("username", player.getName());
 			playerFile.set("displayname", player.getDisplayName());
+			playerFile.set("playtime", 0);
 		}
 		else
 		{
@@ -232,7 +191,6 @@ public class PlayerEvents implements Listener
 			{
 				plugin.getPlayerDataFile(player).set("username", player.getName());
 			}
-			plugin.getPlayerDataFile(player).set("playtime", 0);
 		}
 		if(player.hasPlayedBefore())
 		{

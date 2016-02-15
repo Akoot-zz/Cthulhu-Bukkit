@@ -37,7 +37,7 @@ public class CommandPlaytime extends Command
 			}
 			else
 			{
-				sendMessage("Usage: &f/playtime [player]");
+				sendUsage("/playtime [player]");
 			}
 		}
 		else
@@ -56,16 +56,39 @@ public class CommandPlaytime extends Command
 			}
 			else
 			{
-				sendMessage("Usage: &f/playtime [player]");
+				sendUsage("/playtime [player]");
 			}
 		}
 
 	}
 
+	public int getPlaytime(Player player)
+	{
+		int time = -1;
+		if(plugin.getPlayerDataFile(player).has("playtime"))
+		{
+			time = plugin.getPlayerDataFile(player).getInt("playtime");
+		}
+		return time;
+	}
+
 	public void sendPlaytime(Player player)
 	{
-		int time = plugin.getPlayerDataFile(player).getInt("playtime");
-
-		sendMessage("Playtime: &f" + ChatUtil.getTime(time));
+		sendMessage((player == sender ? "" : player.getName() + "'s ") + "Playtime: &f" + ChatUtil.getTime(getPlaytime(player)));
+		if(plugin.getPermissions() != null && player == sender)
+		{
+			if(getPlaytime(player) >= 10)
+			{
+				sendCommand("&dClick &bhere &dto become a &eMember", "/redeem -g member");
+			}
+			else if(getPlaytime(player) >= 720)
+			{
+				sendCommand("&dClick &bhere &dto become a &6Member+", "/redeem -g member+");
+			}
+			else if(getPlaytime(player) >= 10080)
+			{
+				sendCommand("&dClick &bhere &dto become a &aLoyalist", "/redeem -g loyalist");
+			}
+		}
 	}
 }

@@ -65,7 +65,7 @@ public class Commands implements CommandExecutor
 					Player player = (Player) sender;
 					if(!player.hasPermission(command.permission))
 					{
-						command.sendMessage("&4You do not have permission to use: &f/" + command.name);
+						command.noPermission();
 						return false;
 					}
 				}

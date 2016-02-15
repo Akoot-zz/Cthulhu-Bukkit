@@ -58,3 +58,6 @@ commands:
     chat-color:
         description: Changes your chat color
         aliases: [cc]
+    redeem:
+        description: Redeems something
+        aliases: [rd]
