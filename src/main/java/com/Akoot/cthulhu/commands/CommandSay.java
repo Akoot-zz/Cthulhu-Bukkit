@@ -14,14 +14,7 @@ public class CommandSay extends Command
 	@Override
 	public void onCommand()
 	{
-		if(args.length > 1)
-		{
-			String msg = ChatUtil.color(ChatUtil.toString(args));
-			sender.getServer().broadcastMessage(ChatUtil.color("&f[&dServer&f] " + msg));
-		}
-		else
-		{
-			sendMessage("Usage: &f/say <message>");
-		}
+		String msg = ChatUtil.color(ChatUtil.toString(args));
+		sender.getServer().broadcastMessage(ChatUtil.color("&f[&dServer&f] " + msg));
 	}
 }

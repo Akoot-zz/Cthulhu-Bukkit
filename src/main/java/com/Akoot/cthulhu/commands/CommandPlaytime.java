@@ -77,15 +77,16 @@ public class CommandPlaytime extends Command
 		sendMessage((player == sender ? "" : player.getName() + "'s ") + "Playtime: &f" + ChatUtil.getTime(getPlaytime(player)));
 		if(plugin.getPermissions() != null && player == sender)
 		{
-			if(getPlaytime(player) >= 10)
+			int time = getPlaytime(player);
+			if(time >= 10 && time < 720)
 			{
 				sendCommand("&dClick &bhere &dto become a &eMember", "/redeem -g member");
 			}
-			else if(getPlaytime(player) >= 720)
+			else if(time >= 720 && time < 10080)
 			{
 				sendCommand("&dClick &bhere &dto become a &6Member+", "/redeem -g member+");
 			}
-			else if(getPlaytime(player) >= 10080)
+			else if(time >= 10080)
 			{
 				sendCommand("&dClick &bhere &dto become a &aLoyalist", "/redeem -g loyalist");
 			}

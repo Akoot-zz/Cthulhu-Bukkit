@@ -35,10 +35,10 @@ public class ServerEvents implements Listener
 					if(event.getAddress().getHostAddress().equalsIgnoreCase(ip))
 					{
 						entity = op.getName();
+						plugin.log.info(entity + " is online on Minecraft");
 					}
 				}
 			}
-			plugin.log.info(entity + " is online on Minecraft");
 		}
 	}
 }

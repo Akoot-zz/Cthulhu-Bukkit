@@ -23,10 +23,6 @@ public class ChatUtil
 			String toColor = getRegex("&x[^&]*", s);
 			s = s.replace(toColor, rainbow(toColor.substring(2)));
 		}
-//		if(s.contains("&x"))
-//		{
-//			s = s.substring(0, s.indexOf("&x")) + rainbow(s.substring(s.indexOf("&x") + 2));
-//		}
 		return ChatColor.translateAlternateColorCodes('&', s);
 	}
 	
@@ -66,33 +62,13 @@ public class ChatUtil
 	
 	public static String getTime(int time)
 	{
-		int minutes = time % 60;
-		int hours = time / 60;
-		int days = hours / 24;
-		int weeks = days / 7;
-		int months = weeks / 4;
-		int years = months / 12;
+		int minutes = time;
 		String message = "";
 		List<String> args = new ArrayList<String>();
-
-		if(years > 0)
+		if(minutes >= 60)
 		{
-			args.add(years + toPlural(years, " year"));
-		}
-		if(months > 0)
-		{
-			args.add(months + toPlural(months, " month"));
-		}
-		if(weeks > 0)
-		{
-			args.add(weeks + toPlural(weeks, " week"));
-		}
-		if(days > 0)
-		{
-			args.add(days + toPlural(days, " day"));
-		}
-		if (hours > 0)
-		{
+			int hours = minutes / 60;
+			if(minutes > 60) minutes %= 60;
 			args.add(hours + toPlural(hours, " hour"));
 		}
 		args.add(minutes + toPlural(minutes, " minute"));

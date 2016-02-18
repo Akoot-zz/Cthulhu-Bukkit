@@ -1,5 +1,6 @@
 package com.Akoot.cthulhu.utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.bukkit.scheduler.BukkitRunnable;
@@ -35,18 +36,21 @@ public class TaskScheduler extends BukkitRunnable
 		}
 	}
 
-	@Override
 	public void run() 
 	{
 		if(method != null && classe != null)
 		{
-			try
-			{
+			try {
 				method.invoke(classe);
-			}
-			catch(Exception e)
-			{
+			} catch (IllegalAccessException e) {
 				plugin.log.severe(classe.getClass().getName() + " could not invoke " + method.getName());
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				plugin.log.severe(classe.getClass().getName() + " could not invoke " + method.getName());
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				plugin.log.severe(classe.getClass().getName() + " could not invoke " + method.getName());
+				e.printStackTrace();
 			}
 		}
 	}

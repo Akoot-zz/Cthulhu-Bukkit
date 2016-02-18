@@ -28,7 +28,10 @@ public class Cthulhu extends JavaPlugin
 	public CthFile config;
 	public File dataFolder;
 	public File playerFolder;
+	public File logFolder;
 	public TaskScheduler scheduler;
+	public CthFile chatLog;
+	public CthFile commandLog;
 
 	public Logger log;
 
@@ -45,7 +48,12 @@ public class Cthulhu extends JavaPlugin
 
 		dataFolder = getDataFolder();
 		playerFolder = new File(getDataFolder(), "userdata");
+		logFolder = new File(getDataFolder(), "logs");
 		config = new CthFile(getDataFolder(), "config");
+		
+		chatLog = new CthFile(logFolder, "chat-log");
+		commandLog = new CthFile(logFolder, "commands-log");
+		
 		createDirectories();
 
 	}
@@ -92,6 +100,12 @@ public class Cthulhu extends JavaPlugin
 		if(!dataFolder.exists()) dataFolder.mkdir();
 
 		if(!playerFolder.exists()) playerFolder.mkdir();
+		
+		if(!logFolder.exists()) logFolder.mkdir();
+		
+		if(!chatLog.exists()) chatLog.create();
+		
+		if(!commandLog.exists()) commandLog.create();
 
 		if(!config.exists())
 		{
@@ -105,6 +119,7 @@ public class Cthulhu extends JavaPlugin
 			config.set("motd", "&aA Minecraft Server");
 			config.set("dropbox-key", "", "In development! Please ignore");
 			config.set("check-server-peek", false);
+			config.set("xp-orb", "xp-orb");
 		}
 	}
 

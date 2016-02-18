@@ -15,7 +15,7 @@ public class CommandWrite extends Command
 	{
 		this.color = "&6";
 		this.name = "write";
-		this.permission = "";
+		this.permission = "cthulhu.write";
 	}
 
 	@Override

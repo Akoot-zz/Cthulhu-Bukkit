@@ -8,7 +8,7 @@ public class CommandRedeem extends Command
 	{
 		this.color = "&6";
 		this.name = "redeem";
-		this.permission = "";
+		this.permission = "cthulhu.redeem";
 	}
 
 	@Override
@@ -57,9 +57,8 @@ public class CommandRedeem extends Command
 									return;
 								}
 							}
-							sendError("Group not found: &7" + args[2]);
 						}
-						sendMessage("&cError: &fGroup not found: &7" + args[2]);
+						sendError("Group not found: &7" + args[1]);
 					}
 					else
 					{

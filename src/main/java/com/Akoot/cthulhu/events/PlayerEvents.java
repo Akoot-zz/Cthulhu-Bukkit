@@ -1,13 +1,15 @@
 package com.Akoot.cthulhu.events;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
+import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,18 +17,19 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Akoot.cthulhu.Cthulhu;
 import com.Akoot.cthulhu.utils.ChatUtil;
 import com.Akoot.cthulhu.utils.CthFile;
+import com.Akoot.cthulhu.utils.PlayerUtils;
 import com.Akoot.cthulhu.utils.RandomUtil;
 
 public class PlayerEvents implements Listener
 {
 	private Cthulhu plugin;
+	private PlayerUtils pu;
 
 	public PlayerEvents(Cthulhu instance)
 	{
@@ -38,49 +41,142 @@ public class PlayerEvents implements Listener
 	{
 		for(Player player: plugin.getServer().getOnlinePlayers())
 		{
-			int time = plugin.getPlayerDataFile(player).getInt("playtime") + 1;
-			plugin.getPlayerDataFile(player).set("playtime", time);
-			if(time == 10 || time == 720 || time == 10080)
+			if(plugin.getEssentials() != null)
 			{
-				player.sendMessage(ChatUtil.color("&dYou have unlocked a new rank!"));
-				player.sendMessage(ChatUtil.color("&fType &d/playtime &fto redeem it"));
+				if(!plugin.getEssentials().getUser(player).isAfk())
+				{
+					if(plugin.getPlayerDataFile(player).has("playtime"))
+					{
+						int time = plugin.getPlayerDataFile(player).getInt("playtime") + 1;
+						plugin.getPlayerDataFile(player).set("playtime", time);
+						if(plugin.getPermissions() != null)
+						{
+							if(time == 10 || time == 720 || time == 10080)
+							{
+								player.sendMessage(ChatUtil.color("&dYou have unlocked a new rank!"));
+								player.sendMessage(ChatUtil.color("&fType &d/playtime &fto redeem it"));
+								if(time == 10)
+								{
+									plugin.getPermissions().playerAdd(player, "redeem.group.member");
+								}
+								else if(time == 720)
+								{
+									plugin.getPermissions().playerAdd(player, "redeem.group.member+");
+								}
+								else if(time == 10080)
+								{
+									plugin.getPermissions().playerAdd(player, "redeem.group.loyalist");
+								}
+							}
+						}
+					}
+					else
+					{
+						plugin.getPlayerDataFile(player).set("playtime", 0);
+					}
+				}
 			}
 		}
 	}
 
-//	public void removeLore(Inventory inventory)
-//	{
-//		for(ItemStack item: inventory.getContents())
-//		{
-//			if((item != null) && (item.getType() != Material.AIR))
-//			{
-//				ItemMeta meta = item.getItemMeta();
-//				meta.setLore(new ArrayList<String>());
-//				item.setItemMeta(meta);
-//			}
-//		}
-//	}
-//
-//	@EventHandler
-//	public void onInteract(PlayerInteractEvent e)
-//	{
-//		Player player = e.getPlayer();
-//		if(e.getAction() == Action.LEFT_CLICK_BLOCK)
-//		{
-//			Block block = e.getClickedBlock();
-//			if(block.getType() == Material.CHEST)
-//			{
-//				Chest chest = (Chest) block.getState();
-//				removeLore(chest.getInventory());
-//				player.sendMessage("cleared the chest. it is now empty. sorry.");
-//			}
-//			else
-//			{
-//				removeLore(player.getInventory());
-//				player.sendMessage("your inventory was tasty");
-//			}
-//		}
-//	}
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e)
+	{
+		Player player = e.getPlayer();
+		pu = new PlayerUtils(player);
+		if((e.getAction() == Action.RIGHT_CLICK_AIR) || (e.getAction() == Action.RIGHT_CLICK_BLOCK))
+		{
+			ItemStack item = player.getItemInHand();
+			if(item.getType() == Material.EMERALD)
+			{
+				String h = plugin.config.getString("xp-orb");
+				ItemMeta meta = item.getItemMeta();
+				String name = ChatColor.stripColor((meta.hasDisplayName() ? meta.getDisplayName() : ""));
+				String regex = h + ".*";
+				if(name.matches(regex))
+				{
+					int xp = pu.getTotalExperience();
+					int level = player.getLevel();
+					List<String> lore = (meta.hasLore() ? meta.getLore() : new ArrayList<String>());
+
+					if(lore.size() >= 1)
+					{
+						for(String line: lore)
+						{
+							line = ChatColor.stripColor(line);
+							if(line.startsWith("Stored: "))
+							{
+								String info = "empty";
+								int exp = Integer.valueOf(line.substring(line.indexOf(":") + 2));
+								int lvl = 0;
+								if(!name.contains("empty")) lvl = Integer.valueOf(name.substring(name.indexOf("(") + 1, name.indexOf("l") - 1));
+								
+								boolean store = false;
+								
+								//int storage = (meta.hasEnchant(Enchantment.ARROW_DAMAGE) ? item.getEnchantmentLevel(Enchantment.ARROW_DAMAGE) : 1);
+								
+								//int lostXP = (exp + xp) % (256 * storage);
+								
+								if(exp > 0)
+								{
+									if(xp > 0)
+									{
+										store = true;
+									}
+									else
+									{
+										store = false;
+									}
+								}
+								else
+								{
+									store = true;
+								}
+								
+								if(store)
+								{
+									exp += xp;
+									lvl += level;
+									info = lvl + ChatUtil.toPlural(level, " level");
+									xp = 0;
+									level = 0;
+								}
+								else
+								{
+									xp = exp;
+									level = lvl;
+									lvl = 0;
+									exp = 0;
+									player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 0);
+								}
+								
+								lore.clear();
+								lore.add("§6Stored: §e" + exp);
+								pu.setTotalExperience(xp);
+								meta.setDisplayName("§a" + h + " §2(" + info + ")");
+							}
+						}
+					}
+					else
+					{
+						lore.clear();
+						lore.add("§6Stored: §e" + xp);
+						String info = "empty";
+						if(xp > 0)
+						{
+							info = level + ChatUtil.toPlural(level, " level");
+							pu.setTotalExperience(0);
+						}
+						meta.setDisplayName("§a" + h + " §2(" + info + ")");
+						meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+						player.sendMessage("§6Initiated " + h);
+					}
+					meta.setLore(lore);
+					item.setItemMeta(meta);
+				}
+			}
+		}
+	}
 
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e)
@@ -171,6 +267,8 @@ public class PlayerEvents implements Listener
 
 		e.setFormat(format);
 		e.setMessage(msg);
+
+		plugin.chatLog.addLine("[" + new Date().getTime() + "] " + player.getName() + ": " + e.getMessage());
 	}
 
 	@EventHandler

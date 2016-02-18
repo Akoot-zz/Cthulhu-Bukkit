@@ -6,7 +6,7 @@ public class CommandCthulhu extends Command
 	{
 		this.color = "&a";
 		this.name = "cthulhu";
-		this.permission = "";
+		this.permission = "cthulhu";
 	}
 	
 	@Override

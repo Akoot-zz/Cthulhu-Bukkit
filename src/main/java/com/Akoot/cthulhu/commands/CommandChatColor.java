@@ -10,7 +10,7 @@ public class CommandChatColor extends Command
 	{
 		this.color = "&b";
 		this.name = "chat-color";
-		this.permission = "";
+		this.permission = "cthulhu.chat-color";
 	}
 	
 	public void sendUsage()
