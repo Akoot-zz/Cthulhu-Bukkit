@@ -4,12 +4,17 @@ import java.math.BigDecimal;
 
 import org.bukkit.entity.Player;
 
-public class PlayerUtils
+public class CthUser
 {
 	private Player player;
-	public PlayerUtils(Player player)
+	public CthUser(Player player)
 	{
 		this.player = player;
+	}
+	
+	public Player getBase()
+	{
+		return player;
 	}
 
 	public int getTotalExperience()
@@ -88,12 +93,31 @@ public class PlayerUtils
 			int experienceNeeded = (9 * level) - 158;
 			float experience = (float) remainder / (float) experienceNeeded;
 			experience = round(experience, 2);
-			System.out.println("xpForLevel: " + xpForLevel);
-			System.out.println(experience);
 
 			//Set Everything
 			player.setLevel(level);
 			player.setExp(experience);      
+		}
+	}
+
+	public int getLevel(int xp)
+	{
+		if(xp >= 0 && xp < 351)
+		{
+			int a = 1; int b = 6; int c = -xp;
+			return (int) (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
+		}
+		else if(xp >= 352 && xp < 1507)
+		{
+			double a = 2.5; double b = -40.5; int c = -xp + 360;
+			double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
+			return  (int) Math.floor(dLevel);
+		}
+		else
+		{
+			double a = 4.5; double b = -162.5; int c = -xp + 2220;
+			double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
+			return (int) Math.floor(dLevel);
 		}
 	}
 

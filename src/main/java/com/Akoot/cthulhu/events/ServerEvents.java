@@ -31,11 +31,14 @@ public class ServerEvents implements Listener
 				Essentials ess = plugin.getEssentials();
 				for(OfflinePlayer op: plugin.getServer().getOfflinePlayers())
 				{
-					String ip = ess.getOfflineUser(op.getName()).getLastLoginAddress();
-					if(event.getAddress().getHostAddress().equalsIgnoreCase(ip))
+					if(!op.isBanned())
 					{
-						entity = op.getName();
-						plugin.log.info(entity + " is online on Minecraft");
+						String ip = ess.getOfflineUser(op.getName()).getLastLoginAddress();
+						if(event.getAddress().getHostAddress().equalsIgnoreCase(ip))
+						{
+							entity = op.getName();
+							plugin.log.info(entity + " is online on Minecraft");
+						}
 					}
 				}
 			}

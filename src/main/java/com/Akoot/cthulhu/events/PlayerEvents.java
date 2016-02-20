@@ -1,15 +1,11 @@
 package com.Akoot.cthulhu.events;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,15 +17,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Akoot.cthulhu.Cthulhu;
+import com.Akoot.cthulhu.items.XPOrb;
 import com.Akoot.cthulhu.utils.ChatUtil;
 import com.Akoot.cthulhu.utils.CthFile;
-import com.Akoot.cthulhu.utils.PlayerUtils;
 import com.Akoot.cthulhu.utils.RandomUtil;
 
 public class PlayerEvents implements Listener
 {
 	private Cthulhu plugin;
-	private PlayerUtils pu;
 
 	public PlayerEvents(Cthulhu instance)
 	{
@@ -83,96 +78,17 @@ public class PlayerEvents implements Listener
 	public void onInteract(PlayerInteractEvent e)
 	{
 		Player player = e.getPlayer();
-		pu = new PlayerUtils(player);
 		if((e.getAction() == Action.RIGHT_CLICK_AIR) || (e.getAction() == Action.RIGHT_CLICK_BLOCK))
 		{
 			ItemStack item = player.getItemInHand();
-			if(item.getType() == Material.EMERALD)
+			if(item.getType() == Material.EMERALD && item.hasItemMeta())
 			{
-				String h = plugin.config.getString("xp-orb");
 				ItemMeta meta = item.getItemMeta();
-				String name = ChatColor.stripColor((meta.hasDisplayName() ? meta.getDisplayName() : ""));
-				String regex = h + ".*";
-				if(name.matches(regex))
+				String name = (meta.hasDisplayName() ? ChatColor.stripColor(meta.getDisplayName()) : "Emerald");
+				if(name.matches(plugin.config.getString("xp-orb") + ".*"))
 				{
-					int xp = pu.getTotalExperience();
-					int level = player.getLevel();
-					List<String> lore = (meta.hasLore() ? meta.getLore() : new ArrayList<String>());
-
-					if(lore.size() >= 1)
-					{
-						for(String line: lore)
-						{
-							line = ChatColor.stripColor(line);
-							if(line.startsWith("Stored: "))
-							{
-								String info = "empty";
-								int exp = Integer.valueOf(line.substring(line.indexOf(":") + 2));
-								int lvl = 0;
-								if(!name.contains("empty")) lvl = Integer.valueOf(name.substring(name.indexOf("(") + 1, name.indexOf("l") - 1));
-								
-								boolean store = false;
-								
-								//int storage = (meta.hasEnchant(Enchantment.ARROW_DAMAGE) ? item.getEnchantmentLevel(Enchantment.ARROW_DAMAGE) : 1);
-								
-								//int lostXP = (exp + xp) % (256 * storage);
-								
-								if(exp > 0)
-								{
-									if(xp > 0)
-									{
-										store = true;
-									}
-									else
-									{
-										store = false;
-									}
-								}
-								else
-								{
-									store = true;
-								}
-								
-								if(store)
-								{
-									exp += xp;
-									lvl += level;
-									info = lvl + ChatUtil.toPlural(level, " level");
-									xp = 0;
-									level = 0;
-								}
-								else
-								{
-									xp = exp;
-									level = lvl;
-									lvl = 0;
-									exp = 0;
-									player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 0);
-								}
-								
-								lore.clear();
-								lore.add("§6Stored: §e" + exp);
-								pu.setTotalExperience(xp);
-								meta.setDisplayName("§a" + h + " §2(" + info + ")");
-							}
-						}
-					}
-					else
-					{
-						lore.clear();
-						lore.add("§6Stored: §e" + xp);
-						String info = "empty";
-						if(xp > 0)
-						{
-							info = level + ChatUtil.toPlural(level, " level");
-							pu.setTotalExperience(0);
-						}
-						meta.setDisplayName("§a" + h + " §2(" + info + ")");
-						meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-						player.sendMessage("§6Initiated " + h);
-					}
-					meta.setLore(lore);
-					item.setItemMeta(meta);
+					XPOrb orb = new XPOrb(plugin, item, player);
+					orb.use();
 				}
 			}
 		}
