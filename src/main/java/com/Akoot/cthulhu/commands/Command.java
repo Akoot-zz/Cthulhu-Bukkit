@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import com.Akoot.cthulhu.Cthulhu;
 import com.Akoot.cthulhu.utils.ChatUtil;
+import com.Akoot.cthulhu.utils.CthUser;
 
 import mkremins.fanciful.FancyMessage;
 
@@ -16,6 +17,7 @@ public class Command
 	public CommandSender sender;
 	public boolean playerOnly = false;
 	public FancyMessage message;
+	public CthUser user;
 
 	public String[] args;
 

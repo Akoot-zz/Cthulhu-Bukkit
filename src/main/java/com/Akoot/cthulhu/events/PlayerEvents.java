@@ -1,22 +1,28 @@
 package com.Akoot.cthulhu.events;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Akoot.cthulhu.Cthulhu;
+import com.Akoot.cthulhu.items.Hand;
+import com.Akoot.cthulhu.items.LockPick;
 import com.Akoot.cthulhu.items.XPOrb;
 import com.Akoot.cthulhu.utils.ChatUtil;
 import com.Akoot.cthulhu.utils.CthFile;
@@ -30,6 +36,14 @@ public class PlayerEvents implements Listener
 	{
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+	}
+	
+	@EventHandler
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
+	{
+		Player player = event.getPlayer();
+		String cmd = event.getMessage();
+		plugin.commandLog.addLine("[" + ChatUtil.getCurrentTime() + "] " + player.getName() + ": " + cmd);
 	}
 
 	public void updatePlaytime()
@@ -91,6 +105,47 @@ public class PlayerEvents implements Listener
 					orb.use();
 				}
 			}
+
+			if(item.getType() == Material.BLAZE_ROD && item.hasItemMeta())
+			{
+				if(e.getAction() == Action.RIGHT_CLICK_BLOCK )
+				{
+					Block block = e.getClickedBlock();
+					if(block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST)
+					{
+						ItemMeta meta = item.getItemMeta();
+						String name = (meta.hasDisplayName() ? ChatColor.stripColor(meta.getDisplayName()) : "Blaze Rod");
+						if(name.matches(plugin.config.getString("lockpick") + ".*"))
+						{
+							Chest chest = (Chest) block.getState();
+							LockPick pick = new LockPick(plugin, item, player, chest);
+							pick.use();
+							e.setCancelled(true);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onEntityInteract(PlayerInteractEntityEvent e)
+	{
+		Player player = e.getPlayer();
+		if(player.isSneaking())
+		{
+			int level = (plugin.getPlayerDataFile(player).has("thief") ? plugin.getPlayerDataFile(player).getInt("thief") : 0);
+			Entity entity = e.getRightClicked();
+			if(entity.isValid())
+			{
+				if(entity instanceof Player)
+				{
+					Player target = (Player) entity;
+					Hand hand = new Hand(plugin, player, target);
+					hand.use();
+				}
+			}
+			plugin.getPlayerDataFile(player).set("thief", level);
 		}
 	}
 
@@ -184,13 +239,20 @@ public class PlayerEvents implements Listener
 		e.setFormat(format);
 		e.setMessage(msg);
 
-		plugin.chatLog.addLine("[" + new Date().getTime() + "] " + player.getName() + ": " + e.getMessage());
+		plugin.chatLog.addLine("[" + ChatUtil.getCurrentTime() + "] " + player.getName() + ": " + ChatColor.stripColor(e.getMessage()));
 	}
 
 	@EventHandler
 	public void playerJoinEvent(PlayerJoinEvent e)
 	{
 		Player player = e.getPlayer();
+		if(player.isOp())
+		{
+			player.chat("/b 0");
+			player.chat("/v 0");
+			player.chat("/vr 0");
+			player.chat("/b v mm");
+		}
 		if(!plugin.hasPlayerData(player))
 		{
 			CthFile playerFile = new CthFile(plugin.playerFolder, player.getUniqueId().toString());
@@ -204,17 +266,6 @@ public class PlayerEvents implements Listener
 			if(!plugin.getPlayerDataFile(player).getString("username").equals(player.getName()))
 			{
 				plugin.getPlayerDataFile(player).set("username", player.getName());
-			}
-		}
-		if(player.hasPlayedBefore())
-		{
-			if(RandomUtil.hasChance(1, 10))
-			{
-				ItemStack item = new ItemStack(Material.STICK, 11);
-				ItemMeta meta = item.getItemMeta();
-				meta.setDisplayName("A Fagggot of Sticks");
-				item.setItemMeta(meta);
-				player.getInventory().addItem(item);
 			}
 		}
 	}

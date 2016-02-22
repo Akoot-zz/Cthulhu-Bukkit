@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.Akoot.cthulhu.commands.Commands;
 import com.Akoot.cthulhu.events.PlayerEvents;
 import com.Akoot.cthulhu.events.ServerEvents;
+import com.Akoot.cthulhu.utils.ChatUtil;
 import com.Akoot.cthulhu.utils.CthFile;
 import com.Akoot.cthulhu.utils.TaskScheduler;
 import com.earth2me.essentials.Essentials;
@@ -29,6 +30,8 @@ public class Cthulhu extends JavaPlugin
 	public File dataFolder;
 	public File playerFolder;
 	public File logFolder;
+	public File chatLogFolder;
+	public File commandLogFolder;
 	public TaskScheduler scheduler;
 	public CthFile chatLog;
 	public CthFile commandLog;
@@ -49,10 +52,14 @@ public class Cthulhu extends JavaPlugin
 		dataFolder = getDataFolder();
 		playerFolder = new File(getDataFolder(), "userdata");
 		logFolder = new File(getDataFolder(), "logs");
+		
+		chatLogFolder = new File(logFolder, "chat");
+		commandLogFolder = new File(logFolder, "commands");
+		
 		config = new CthFile(getDataFolder(), "config");
 		
-		chatLog = new CthFile(logFolder, "chat-log");
-		commandLog = new CthFile(logFolder, "commands-log");
+		chatLog = new CthFile(chatLogFolder, ChatUtil.getCurrentDate());
+		commandLog = new CthFile(commandLogFolder, ChatUtil.getCurrentDate());
 		
 		createDirectories();
 
@@ -103,6 +110,10 @@ public class Cthulhu extends JavaPlugin
 		
 		if(!logFolder.exists()) logFolder.mkdir();
 		
+		if(!chatLogFolder.exists()) chatLogFolder.mkdir();
+		
+		if(!commandLogFolder.exists()) commandLogFolder.mkdir();
+		
 		if(!chatLog.exists()) chatLog.create();
 		
 		if(!commandLog.exists()) commandLog.create();
@@ -120,6 +131,7 @@ public class Cthulhu extends JavaPlugin
 			config.set("dropbox-key", "", "In development! Please ignore");
 			config.set("check-server-peek", false);
 			config.set("xp-orb", "xp-orb");
+			config.set("lockpick", "Lockpick");
 		}
 	}
 

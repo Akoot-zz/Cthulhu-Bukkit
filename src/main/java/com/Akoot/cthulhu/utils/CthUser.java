@@ -2,19 +2,58 @@ package com.Akoot.cthulhu.utils;
 
 import java.math.BigDecimal;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+
+import com.Akoot.cthulhu.Cthulhu;
 
 public class CthUser
 {
 	private Player player;
-	public CthUser(Player player)
+	private Cthulhu plugin;
+
+	public CthUser(Cthulhu plugin, Player player)
 	{
 		this.player = player;
+		this.plugin = plugin;
 	}
-	
+
 	public Player getBase()
 	{
 		return player;
+	}
+
+	public CthFile getFile()
+	{
+		return plugin.getPlayerDataFile(player);
+	}
+
+	public void sendMessage(String msg)
+	{
+		player.sendMessage(ChatUtil.color(msg));
+	}
+
+	public int getLevel(Skill skill)
+	{
+		return (getFile().has(skill.name().toLowerCase()) ? getFile().getInt("thief") : 0);
+	}
+
+	public void setLevel(Skill skill, int level)
+	{
+		getFile().set(skill.name().toLowerCase(), level);
+	}
+	
+	public void levelUp(Skill skill)
+	{
+		int level = getLevel(skill) + 1;
+		sendMessage("&6You are now a level " + level + " " + skill.name().toLowerCase());
+		player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
+		setLevel(skill, level);
+	}
+	
+	public void levelUp(Skill skill, int chance)
+	{
+		if(RandomUtil.hasChance(chance - getLevel(skill))) levelUp(skill);
 	}
 
 	public int getTotalExperience()

@@ -16,12 +16,12 @@ public class Commands implements CommandExecutor
 	private Cthulhu plugin;
 
 	public List<Command> commands;
-	
+
 	public Commands(Cthulhu instance)
 	{
 		plugin = instance;
 		commands = new ArrayList<Command>();
-		
+
 		commands.add(new CommandChatFormat());
 		commands.add(new CommandMake());
 		//commands.add(new CommandFriend());
@@ -39,13 +39,16 @@ public class Commands implements CommandExecutor
 		commands.add(new CommandWrite());
 		commands.add(new CommandChatColor());
 		commands.add(new CommandRedeem());
-		
+		commands.add(new CommandStop());
+		commands.add(new CommandHub());
+		commands.add(new CommandSkills());
+
 		for(Command cmd: commands)
 		{
 			plugin.getCommand(cmd.name).setExecutor(this);
 		}
 	}
-	
+
 	public void addCommand(Command command)
 	{
 		commands.add(command);
@@ -53,6 +56,12 @@ public class Commands implements CommandExecutor
 
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String alias, String[] args)
 	{
+		if(sender instanceof Player)
+		{
+			Player player = (Player)sender;
+			plugin.commandLog.addLine("[" + ChatUtil.getCurrentTime() + "] " + player.getName() + ": " + cmd.getName() + " /" + ChatUtil.toString(args));
+		}
+
 		for(Command command: commands)
 		{
 			if(cmd.getName().equalsIgnoreCase(command.name))
@@ -60,7 +69,7 @@ public class Commands implements CommandExecutor
 				command.plugin = plugin;
 				command.sender = sender;
 				command.args = args;
-				
+
 				if(sender instanceof Player)
 				{
 					Player player = (Player) sender;
@@ -80,7 +89,7 @@ public class Commands implements CommandExecutor
 					BlockCommandSender block  = (BlockCommandSender) sender;
 					System.out.println(String.format("Command block at %s,%s,%s issued server command: /%s", block.getBlock().getX(), block.getBlock().getY(), block.getBlock().getZ(), command.name + " " + ChatUtil.toString(args)));
 				}
-				
+
 				command.onCommand();
 			}
 		}

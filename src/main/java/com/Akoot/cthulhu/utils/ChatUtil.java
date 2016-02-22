@@ -1,6 +1,8 @@
 package com.Akoot.cthulhu.utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -14,6 +16,7 @@ public class ChatUtil
 	public static String[] colors = {"a","b","c","d","e","3","4","5","6","9","2"};
 	public static String[] rainbowseq = {"a","3","9","5","d","c","6","e"};
 	private static Random random = new Random();
+	private static Calendar cal = new GregorianCalendar();   
 
 	public static String color(String s)
 	{
@@ -24,6 +27,16 @@ public class ChatUtil
 			s = s.replace(toColor, rainbow(toColor.substring(2)));
 		}
 		return ChatColor.translateAlternateColorCodes('&', s);
+	}
+	
+	public static String getCurrentDate()
+	{
+		return String.format("%d-%d-%d", cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR));
+	}
+	
+	public static String getCurrentTime()
+	{
+		return String.format("%d:%02d %s", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), (cal.get(Calendar.AM_PM) == Calendar.PM ? "PM" : "AM"));
 	}
 	
 	public static String getRegex(String regex, String data)
