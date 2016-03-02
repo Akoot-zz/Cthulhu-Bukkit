@@ -16,7 +16,7 @@ public class ChatUtil
 	public static String[] colors = {"a","b","c","d","e","3","4","5","6","9","2"};
 	public static String[] rainbowseq = {"a","3","9","5","d","c","6","e"};
 	private static Random random = new Random();
-	private static Calendar cal = new GregorianCalendar();   
+	private static Calendar cal;
 
 	public static String color(String s)
 	{
@@ -31,11 +31,13 @@ public class ChatUtil
 	
 	public static String getCurrentDate()
 	{
+		cal = new GregorianCalendar();   
 		return String.format("%d-%d-%d", cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR));
 	}
 	
 	public static String getCurrentTime()
 	{
+		cal = new GregorianCalendar();   
 		return String.format("%d:%02d %s", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), (cal.get(Calendar.AM_PM) == Calendar.PM ? "PM" : "AM"));
 	}
 	

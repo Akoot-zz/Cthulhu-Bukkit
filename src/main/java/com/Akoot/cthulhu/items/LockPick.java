@@ -8,8 +8,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.Akoot.cthulhu.Cthulhu;
+import com.Akoot.cthulhu.Skill;
 import com.Akoot.cthulhu.utils.RandomUtil;
-import com.Akoot.cthulhu.utils.Skill;
 
 public class LockPick extends CthItem
 {
@@ -67,7 +67,7 @@ public class LockPick extends CthItem
 
 	public void fail()
 	{
-		player.getWorld().playSound(player.getLocation(), Sound.ITEM_BREAK, 1, 1);
+		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
 		player.getWorld().playEffect(chest.getLocation(), Effect.SMOKE, 2);
 		int amt = item.getAmount();
 		if(amt > 1) item.setAmount(amt - 1);

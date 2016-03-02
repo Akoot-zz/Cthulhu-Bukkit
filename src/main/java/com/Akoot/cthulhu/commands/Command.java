@@ -2,9 +2,9 @@ package com.Akoot.cthulhu.commands;
 
 import org.bukkit.command.CommandSender;
 
+import com.Akoot.cthulhu.CthUser;
 import com.Akoot.cthulhu.Cthulhu;
 import com.Akoot.cthulhu.utils.ChatUtil;
-import com.Akoot.cthulhu.utils.CthUser;
 
 import mkremins.fanciful.FancyMessage;
 

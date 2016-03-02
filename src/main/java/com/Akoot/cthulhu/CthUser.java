@@ -1,11 +1,13 @@
-package com.Akoot.cthulhu.utils;
+package com.Akoot.cthulhu;
 
 import java.math.BigDecimal;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import com.Akoot.cthulhu.Cthulhu;
+import com.Akoot.cthulhu.util.CthFile;
+import com.Akoot.cthulhu.utils.ChatUtil;
+import com.Akoot.cthulhu.utils.RandomUtil;
 
 public class CthUser
 {
@@ -22,6 +24,26 @@ public class CthUser
 	{
 		return player;
 	}
+	
+	public Boolean hasPermission(String perm)
+	{
+		if(player.hasPermission(perm)) return true;
+		return false;
+	}
+	
+	public Boolean hasPermission(String[] perms)
+	{
+		for(String perm: perms)
+		{
+			if(player.hasPermission(perm)) return true;
+		}
+		return false;
+	}
+	
+	public int getPlaytime()
+	{
+		return getFile().getInt("playtime");
+	}
 
 	public CthFile getFile()
 	{
@@ -35,7 +57,7 @@ public class CthUser
 
 	public int getLevel(Skill skill)
 	{
-		return (getFile().has(skill.name().toLowerCase()) ? getFile().getInt("thief") : 0);
+		return (getFile().has(skill.name().toLowerCase()) ? getFile().getInt(skill.name()) : 0);
 	}
 
 	public void setLevel(Skill skill, int level)
@@ -47,7 +69,7 @@ public class CthUser
 	{
 		int level = getLevel(skill) + 1;
 		sendMessage("&6You are now a level " + level + " " + skill.name().toLowerCase());
-		player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
+		player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 		setLevel(skill, level);
 	}
 	
@@ -55,6 +77,11 @@ public class CthUser
 	{
 		if(RandomUtil.hasChance(chance - getLevel(skill))) levelUp(skill);
 	}
+	
+	/**
+	 *  Random XP Shit 
+	 *  
+	 */
 
 	public int getTotalExperience()
 	{
@@ -87,10 +114,8 @@ public class CthUser
 
 	public void setTotalExperience(int xp)
 	{
-		//Levels 0 through 15
 		if(xp >= 0 && xp < 351)
 		{
-			//Calculate Everything
 			int a = 1; int b = 6; int c = -xp;
 			int level = (int) (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
 			int xpForLevel = (int) (Math.pow(level, 2) + (6 * level));
@@ -98,15 +123,11 @@ public class CthUser
 			int experienceNeeded = (2 * level) + 7;
 			float experience = (float) remainder / (float) experienceNeeded;
 			experience = round(experience, 2);
-
-			//Set Everything
 			player.setLevel(level);
 			player.setExp(experience);
-			//Levels 16 through 30
 		}
 		else if(xp >= 352 && xp < 1507)
 		{
-			//Calculate Everything
 			double a = 2.5; double b = -40.5; int c = -xp + 360;
 			double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
 			int level = (int) Math.floor(dLevel);
@@ -115,15 +136,11 @@ public class CthUser
 			int experienceNeeded = (5 * level) - 38;
 			float experience = (float) remainder / (float) experienceNeeded;
 			experience = round(experience, 2);
-
-			//Set Everything
 			player.setLevel(level);
 			player.setExp(experience);    
-			//Level 31 and greater
 		}
 		else
 		{
-			//Calculate Everything
 			double a = 4.5; double b = -162.5; int c = -xp + 2220;
 			double dLevel = (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a);
 			int level = (int) Math.floor(dLevel);
@@ -132,8 +149,6 @@ public class CthUser
 			int experienceNeeded = (9 * level) - 158;
 			float experience = (float) remainder / (float) experienceNeeded;
 			experience = round(experience, 2);
-
-			//Set Everything
 			player.setLevel(level);
 			player.setExp(experience);      
 		}

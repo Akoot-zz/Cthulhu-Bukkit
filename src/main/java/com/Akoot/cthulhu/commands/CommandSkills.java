@@ -2,8 +2,8 @@ package com.Akoot.cthulhu.commands;
 
 import org.bukkit.entity.Player;
 
-import com.Akoot.cthulhu.utils.CthUser;
-import com.Akoot.cthulhu.utils.Skill;
+import com.Akoot.cthulhu.CthUser;
+import com.Akoot.cthulhu.Skill;
 
 public class CommandSkills extends Command
 {

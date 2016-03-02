@@ -25,7 +25,7 @@ import com.Akoot.cthulhu.items.Hand;
 import com.Akoot.cthulhu.items.LockPick;
 import com.Akoot.cthulhu.items.XPOrb;
 import com.Akoot.cthulhu.utils.ChatUtil;
-import com.Akoot.cthulhu.utils.CthFile;
+import com.Akoot.cthulhu.util.CthFile;
 import com.Akoot.cthulhu.utils.RandomUtil;
 
 public class PlayerEvents implements Listener

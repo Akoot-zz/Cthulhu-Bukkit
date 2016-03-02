@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import com.Akoot.cthulhu.Cthulhu;
+import com.Akoot.cthulhu.Skill;
 import com.Akoot.cthulhu.utils.RandomUtil;
-import com.Akoot.cthulhu.utils.Skill;
 
 public class Hand extends CthItem
 {
