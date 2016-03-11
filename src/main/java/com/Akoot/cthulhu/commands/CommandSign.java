@@ -23,12 +23,12 @@ public class CommandSign extends Command
 			Player player = (Player)sender;
 			if(args.length == 0)
 			{
-				if(player.getItemInHand().getType() == Material.WRITTEN_BOOK)
+				if(player.getInventory().getItemInMainHand().getType() == Material.WRITTEN_BOOK)
 				{
-					BookMeta meta = (BookMeta) player.getItemInHand().getItemMeta();
+					BookMeta meta = (BookMeta) player.getInventory().getItemInMainHand().getItemMeta();
 					meta.setAuthor(player.getName());
-					player.getItemInHand().setItemMeta(meta);
-					sendMessage("Signed \"" +  player.getItemInHand().getItemMeta().getDisplayName() + "\" by your name");
+					player.getInventory().getItemInMainHand().setItemMeta(meta);
+					sendMessage("Signed \"" +  player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() + "\" by your name");
 				}
 				else
 				{
@@ -37,13 +37,13 @@ public class CommandSign extends Command
 			}
 			else if(args.length >= 1)
 			{
-				if(player.getItemInHand().getType() == Material.WRITTEN_BOOK)
+				if(player.getInventory().getItemInMainHand().getType() == Material.WRITTEN_BOOK)
 				{
 					String author = ChatUtil.color(ChatUtil.toString(args));
-					BookMeta meta = (BookMeta) player.getItemInHand().getItemMeta();
+					BookMeta meta = (BookMeta) player.getInventory().getItemInMainHand().getItemMeta();
 					meta.setAuthor(author);
-					player.getItemInHand().setItemMeta(meta);
-					sendMessage("Signed \"" +  player.getItemInHand().getItemMeta().getDisplayName() + "\" by " + author);
+					player.getInventory().getItemInMainHand().setItemMeta(meta);
+					sendMessage("Signed \"" +  player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() + "\" by " + author);
 				}
 				else
 				{

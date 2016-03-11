@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -94,7 +95,7 @@ public class PlayerEvents implements Listener
 		Player player = e.getPlayer();
 		if((e.getAction() == Action.RIGHT_CLICK_AIR) || (e.getAction() == Action.RIGHT_CLICK_BLOCK))
 		{
-			ItemStack item = player.getItemInHand();
+			ItemStack item = player.getInventory().getItemInMainHand();
 			if(item.getType() == Material.EMERALD && item.hasItemMeta())
 			{
 				ItemMeta meta = item.getItemMeta();
@@ -156,6 +157,13 @@ public class PlayerEvents implements Listener
 
 		String format = "";
 		String msg = e.getMessage();
+		
+		String chopped = "";
+		for(char ch: msg.toCharArray())
+		{
+			chopped += ch + " ";
+		}
+		chopped = chopped.trim();
 
 		if(msg.startsWith("\\") || msg.startsWith("./"))
 		{
@@ -205,6 +213,9 @@ public class PlayerEvents implements Listener
 		format = format.replaceAll("\\{displayname\\}|\\{dname\\}|\\{nick\\}|\\{nickname\\}", player.getDisplayName());
 		format = format.replaceAll("\\{username\\}|\\{name\\}|\\{n\\}|\\{uname\\}", "%1\\$s");
 		format = format.replaceAll("\\{message\\}|\\{msg\\}|\\{m\\}|\\{txt\\}", "%2\\$s");
+		format = format.replaceAll("\\{m s g\\}|\\{m e s s a g e\\}|\\{t e x t\\}|\\{t x t\\}", chopped);
+		format = format.replaceAll("\\{M S G\\}|\\{M E S S A G E\\}|\\{T E X T\\}|\\{T X T\\}", chopped.toUpperCase());
+		format = format.replaceAll("\\{MESSAGE\\}|\\{MSG\\}|\\{M\\}|\\{TXT\\}", msg.toUpperCase());
 
 		if(plugin.getPlayerDataFile(player).has("chat-color"))
 			msg = "&" + plugin.getPlayerDataFile(player).getString("chat-color") + msg;
@@ -240,6 +251,12 @@ public class PlayerEvents implements Listener
 		e.setMessage(msg);
 
 		plugin.chatLog.addLine("[" + ChatUtil.getCurrentTime() + "] " + player.getName() + ": " + ChatColor.stripColor(e.getMessage()));
+	}
+	
+	@EventHandler
+	public void playerQuitEvent(PlayerQuitEvent e)
+	{
+		e.setQuitMessage("§eRIP " + e.getPlayer().getName() + "...");
 	}
 
 	@EventHandler

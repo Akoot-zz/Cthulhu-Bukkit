@@ -122,18 +122,35 @@ public class Cthulhu extends JavaPlugin
 
 		if(!config.exists())
 		{
-			config.create();
-			config.addComment("Welcome to the config!");
-			config.addComment("The prefix you wish to use for (most) plugin messages");
-			config.set("prefix", "&7[&aServer&7]");
-			config.addComment("Default chat format for players who do not have a custom chat format.");
-			config.set("default-chat-format", "<{displayname}> {message}");
-			config.addComment("MOTD shown before joining the server (server browser)");
-			config.set("motd", "&aA Minecraft Server");
-			config.set("check-server-peek", false);
-			config.set("xp-orb", "xp orb");
-			config.set("lockpick", "Lockpick");
+			try
+			{
+				config.copyFromFile(new File(this.getClass().getResource("config.cth").toURI()));
+			}
+			catch (Exception e)
+			{
+				log.severe("Could not copy default config, creating an empty config");
+				config.create();
+				config.set("motd", "A Minecraft Server");
+				config.set("check-server-peek", false);
+				config.set("motd", "A Minecraft Server");
+				config.set("default-chat-format", "<{displayname}> {message}");
+			}
 		}
+
+		//		if(!config.exists())
+		//		{
+		//			config.create();
+		//			config.addComment("Welcome to the config!");
+		//			config.addComment("The prefix you wish to use for (most) plugin messages");
+		//			config.set("prefix", "&7[&aServer&7]");
+		//			config.addComment("Default chat format for players who do not have a custom chat format.");
+		//			config.set("default-chat-format", "<{displayname}> {message}");
+		//			config.addComment("MOTD shown before joining the server (server browser)");
+		//			config.set("motd", "&aA Minecraft Server");
+		//			config.set("check-server-peek", false);
+		//			config.set("xp-orb", "xp orb");
+		//			config.set("lockpick", "Lockpick");
+		//		}
 	}
 
 	public Player getPlayer(String find)

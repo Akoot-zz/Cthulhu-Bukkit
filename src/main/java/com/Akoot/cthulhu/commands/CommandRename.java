@@ -28,13 +28,13 @@ public class CommandRename extends Command
 			}
 			else if(args.length >= 1)
 			{
-				if((player.getItemInHand() != null) && (player.getItemInHand().getType() != Material.AIR))
+				if((player.getInventory().getItemInMainHand() != null) && (player.getInventory().getItemInMainHand().getType() != Material.AIR))
 				{
 					String newName = ChatUtil.color("&r" + ChatUtil.toString(args));
-					ItemMeta meta = player.getItemInHand().getItemMeta();
+					ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
 					meta.setDisplayName(newName);
-					player.getItemInHand().setItemMeta(meta);
-					sendMessage("Renamed &f" + ChatUtil.itemName(player.getItemInHand()) + " &6to: &f" + newName);
+					player.getInventory().getItemInMainHand().setItemMeta(meta);
+					sendMessage("Renamed &f" + ChatUtil.itemName(player.getInventory().getItemInMainHand()) + " &6to: &f" + newName);
 				}
 				else
 				{

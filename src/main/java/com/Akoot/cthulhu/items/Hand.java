@@ -14,7 +14,7 @@ public class Hand extends CthItem
 
 	public Hand(Cthulhu plugin, Player player, Player target) 
 	{
-		super(plugin, player.getItemInHand(), player);
+		super(plugin, player.getInventory().getItemInMainHand(), player);
 		this.target = target;
 		this.skill = Skill.THIEF;
 	}

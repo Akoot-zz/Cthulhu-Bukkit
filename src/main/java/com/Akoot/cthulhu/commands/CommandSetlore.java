@@ -27,7 +27,7 @@ public class CommandSetlore extends Command
 			Player player = (Player) sender;
 			if(args.length > 0)
 			{
-				if((player.getItemInHand() != null) && (player.getItemInHand().getType() != Material.AIR))
+				if((player.getInventory().getItemInMainHand() != null) && (player.getInventory().getItemInMainHand().getType() != Material.AIR))
 				{
 					List<String> lore = new ArrayList<String>();
 					String msg = ChatUtil.toString(args);
@@ -35,7 +35,7 @@ public class CommandSetlore extends Command
 					{
 						lore.add(ChatUtil.color("&f" + s).trim());
 					}
-					ItemStack item = player.getItemInHand();
+					ItemStack item = player.getInventory().getItemInMainHand();
 					ItemMeta meta = item.getItemMeta();
 					meta.setLore(lore);
 					item.setItemMeta(meta);
@@ -44,7 +44,7 @@ public class CommandSetlore extends Command
 					{
 						sendMessage("&f" + s);
 					}
-					meta = player.getItemInHand().getItemMeta();
+					meta = player.getInventory().getItemInMainHand().getItemMeta();
 				}
 				else
 				{

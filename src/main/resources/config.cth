@@ -1,0 +1,16 @@
+# Welcome to the config!
+# The prefix you wish to use for (most) plugin messages
+prefix: "&7[&6Server&7]"
+
+# Default chat format for players who do not have a custom chat format.
+default-chat-format: "<{nick}> {message}"
+
+# MOTD shown before joining the server (server browser)
+motd: "§7Welcome"
+
+#Name of special items
+xp-orb: "XP Orb"
+lockpick: "Lockpick"
+
+#Tells console when someone is about to join
+check-server-peek: false
