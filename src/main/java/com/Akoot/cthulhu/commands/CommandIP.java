@@ -4,8 +4,6 @@ import java.net.InetSocketAddress;
 
 import org.bukkit.entity.Player;
 
-import com.Akoot.cthulhu.utils.RandomUtil;
-
 public class CommandIP extends Command
 {
 	public CommandIP()
@@ -13,11 +11,6 @@ public class CommandIP extends Command
 		this.color = "&4";
 		this.name = "ip";
 		this.permission = "cthulhu.ip";
-	}
-
-	public void sendUsage()
-	{
-		sendMessage("/ip <player>", "/ip " + RandomUtil.randomPlayer());
 	}
 
 	public String getIP(Player target)

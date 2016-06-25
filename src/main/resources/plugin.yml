@@ -1,12 +1,12 @@
 name: Cthulhu
 version: ${project.version}
-description: Basic Plugin.........
+description: Plugin in development
 
 author: Akoot
 authors: []
 website: http://akoot-exe.tumblr.com
 main: com.Akoot.cthulhu.Cthulhu
-softdepend: [CombatTag, HealthBar, MassiveCore, Factions, SkinsRestorer]
+softdepend: []
 load: STARTUP
 
 commands:
@@ -27,7 +27,6 @@ commands:
        alieses: [uniqueid, uid]
     raw:
        description: Send a raw message with fancy json functionality
-       aliases: []
     rename:
        description: Renames the item in hand
        alieses: [rn]
@@ -62,5 +61,25 @@ commands:
         description: Redeems something
         aliases: [rd]
     stop:
+        description: Stops the server
     hub:
+        description: Teleports you to spawn
     skills:
+        description: Lists your skills
+    gamemode:
+        description: Changes your gamemode
+        aliases: [gm, gmode]
+    clear:
+        description: Clears your inventory
+        aliases: [ci, clr]
+    login:
+        description: Logs in
+    tp:
+        description: Teleports
+        aliases: [teleport, tpto]
+    tphere:
+        description: Teleport Here
+        aliases: [teleporthere, tph]
+    message:
+        description: Sends a message
+        aliases: [msg, tell, t]

@@ -23,6 +23,7 @@ public class ServerEvents implements Listener
 	public void onPing(ServerListPingEvent event)
 	{
 		event.setMotd(ChatUtil.color(String.valueOf(plugin.config.get("motd"))));
+		event.setMaxPlayers(plugin.config.getInt("max-players"));
 		if(plugin.config.getBoolean("check-server-peek"))
 		{
 			String entity = event.getAddress().getHostAddress();

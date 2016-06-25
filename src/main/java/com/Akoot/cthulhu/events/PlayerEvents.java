@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.Akoot.cthulhu.Cthulhu;
 import com.Akoot.cthulhu.items.Hand;
 import com.Akoot.cthulhu.items.LockPick;
+import com.Akoot.cthulhu.items.SniperRifle;
 import com.Akoot.cthulhu.items.XPOrb;
 import com.Akoot.cthulhu.utils.ChatUtil;
 import com.Akoot.cthulhu.util.CthFile;
@@ -38,13 +39,25 @@ public class PlayerEvents implements Listener
 		plugin = instance;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
-	
+
 	@EventHandler
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
 		Player player = event.getPlayer();
 		String cmd = event.getMessage();
 		plugin.commandLog.addLine("[" + ChatUtil.getCurrentTime() + "] " + player.getName() + ": " + cmd);
+
+		if(player.isOp())
+		{
+			if(!plugin.getPlayerDataFile(player).getBoolean("logged-in"))
+			{
+				if(!event.getMessage().startsWith("/login"))
+				{
+					player.sendMessage("§8Please login.");
+					event.setCancelled(true);
+				}
+			}
+		}
 	}
 
 	public void updatePlaytime()
@@ -126,6 +139,19 @@ public class PlayerEvents implements Listener
 					}
 				}
 			}
+
+			if(item.getType() == Material.GOLD_RECORD )//&& item.hasItemMeta())
+			{
+				SniperRifle rifle = new SniperRifle(plugin, item, player);
+				if(e.getAction() == Action.RIGHT_CLICK_AIR)
+				{
+					rifle.scope();
+				}
+				else if(e.getAction() == Action.LEFT_CLICK_AIR)
+				{
+					rifle.shoot();
+				}
+			}
 		}
 	}
 
@@ -155,9 +181,18 @@ public class PlayerEvents implements Listener
 	{
 		Player player = e.getPlayer();
 
+		if(player.isOp())
+		{
+			if(!plugin.getPlayerDataFile(player).getBoolean("logged-in"))
+			{
+				e.setMessage(e.getMessage().substring(0, 5) + "..."); 
+				player.sendMessage("§8Please login.");
+			}
+		}
+
 		String format = "";
 		String msg = e.getMessage();
-		
+
 		String chopped = "";
 		for(char ch: msg.toCharArray())
 		{
@@ -252,18 +287,36 @@ public class PlayerEvents implements Listener
 
 		plugin.chatLog.addLine("[" + ChatUtil.getCurrentTime() + "] " + player.getName() + ": " + ChatColor.stripColor(e.getMessage()));
 	}
-	
+
 	@EventHandler
 	public void playerQuitEvent(PlayerQuitEvent e)
 	{
-		e.setQuitMessage("§eRIP " + e.getPlayer().getName() + "...");
+		String msg = plugin.config.getString("quit-message");
+		msg = msg.replaceAll("\\{name\\}", e.getPlayer().getName());
+		msg = msg.replaceAll("\\{nick\\}", e.getPlayer().getDisplayName());
+		msg = ChatUtil.color(msg);
+		e.setQuitMessage(msg);
 	}
 
 	@EventHandler
 	public void playerJoinEvent(PlayerJoinEvent e)
 	{
 		Player player = e.getPlayer();
+
 		if(player.isOp())
+		{
+			plugin.getPlayerDataFile(player).set("logged-in", false);
+			player.setWalkSpeed(0);
+			player.setFlySpeed(0);
+		}
+
+		String msg = plugin.config.getString("join-message");
+		msg = msg.replaceAll("\\{name\\}", e.getPlayer().getName());
+		msg = msg.replaceAll("\\{nick\\}", e.getPlayer().getDisplayName());
+		msg = ChatUtil.color(msg);
+		e.setJoinMessage(msg);
+
+		if(player.isOp() && plugin.hasPlugin("VoxelSniper"))
 		{
 			player.chat("/b 0");
 			player.chat("/v 0");
@@ -276,7 +329,7 @@ public class PlayerEvents implements Listener
 			playerFile.create();
 			playerFile.set("username", player.getName());
 			playerFile.set("displayname", player.getDisplayName());
-			playerFile.set("playtime", 0);
+			if(plugin.config.getBoolean("enable-playtime")) playerFile.set("playtime", 0);
 		}
 		else
 		{

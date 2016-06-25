@@ -24,7 +24,7 @@ public class Commands implements CommandExecutor
 
 		commands.add(new CommandChatFormat());
 		commands.add(new CommandMake());
-		//commands.add(new CommandFriend());
+		commands.add(new CommandGamemode());
 		commands.add(new CommandCthulhu());
 		commands.add(new CommandUUID());
 		commands.add(new CommandRaw());
@@ -42,6 +42,11 @@ public class Commands implements CommandExecutor
 		commands.add(new CommandStop());
 		commands.add(new CommandHub());
 		commands.add(new CommandSkills());
+		commands.add(new CommandClear());
+		commands.add(new CommandLogin());
+		commands.add(new CommandTeleport());
+		commands.add(new CommandTeleportHere());
+		commands.add(new CommandMessage());
 
 		for(Command cmd: commands)
 		{

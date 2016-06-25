@@ -85,7 +85,7 @@ public class CommandChatFormat extends Command
 			}
 			else if(args.length >= 2)
 			{
-				Player target = plugin.getPlayer(args[0].substring(3), true);
+				Player target = plugin.getPlayer(args[0], true);
 				int index = 1;
 				if(target == null)
 				{
@@ -114,7 +114,7 @@ public class CommandChatFormat extends Command
 			}
 			else if(args.length >= 2)
 			{
-				Player target = plugin.getPlayer(args[0].substring(3), true);
+				Player target = plugin.getPlayer(args[0], true);
 				if(target != null)
 				{
 					String fmt = "";

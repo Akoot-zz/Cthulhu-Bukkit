@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
+import mkremins.fanciful.FancyMessage;
+
 public class ChatUtil 
 {
 	public static String[] colors = {"a","b","c","d","e","3","4","5","6","9","2"};
@@ -131,6 +133,18 @@ public class ChatUtil
 		}
 		msg = msg.trim();
 		return msg;
+	}
+	
+	public FancyMessage parseFancyMessage(String msg)
+	{
+		FancyMessage message = new FancyMessage();
+		List<String> urls = new ArrayList<String>();
+		
+		for(String url: urls)
+		{
+			message.link(url);
+		}
+		return message;
 	}
 
 	public static String toPlural(int amt, String msg)

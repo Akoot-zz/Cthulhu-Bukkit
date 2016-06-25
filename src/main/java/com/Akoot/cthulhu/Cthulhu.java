@@ -34,18 +34,18 @@ public class Cthulhu extends JavaPlugin
 	public CthFile chatLog;
 	public CthFile commandLog;
 
+	public CthFile dev;
+
 	public Logger log;
 
 	@Override
 	public void onEnable()
-	{
+	{	
 		log = getLogger();
 		playerEvents = new PlayerEvents(this);
 		serverEvents = new ServerEvents(this);
 		commands = new Commands(this);
 		scheduler = new TaskScheduler(this);
-
-		scheduler.schedule(playerEvents, "updatePlaytime", 60);
 
 		dataFolder = getDataFolder();
 		playerFolder = new File(getDataFolder(), "userdata");
@@ -56,10 +56,14 @@ public class Cthulhu extends JavaPlugin
 
 		config = new CthFile(getDataFolder(), "config");
 
-		chatLog = new CthFile(chatLogFolder, ChatUtil.getCurrentDate());
-		commandLog = new CthFile(commandLogFolder, ChatUtil.getCurrentDate());
+		chatLog = new CthFile(chatLogFolder, ChatUtil.getCurrentDate() + ".log");
+		commandLog = new CthFile(commandLogFolder, ChatUtil.getCurrentDate() + ".log");
+
+		dev = new CthFile(getDataFolder(), "dev.dat");
 
 		createDirectories();
+
+		if(config.getBoolean("enable-playtime")) scheduler.schedule(playerEvents, "updatePlaytime", 60);
 	}
 
 	public void log(String msg)
@@ -69,9 +73,13 @@ public class Cthulhu extends JavaPlugin
 
 	public Permission getPermissions()
 	{
-		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		Permission perms = rsp.getProvider();
-		return perms;
+		if(hasPlugin("Vault"))
+		{
+			RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+			Permission perms = rsp.getProvider();
+			return perms;
+		}
+		return null;
 	}
 
 	public Essentials getEssentials()
@@ -120,37 +128,24 @@ public class Cthulhu extends JavaPlugin
 
 		if(!commandLog.exists()) commandLog.create();
 
-		if(!config.exists())
+		if(!dev.exists())
 		{
-			try
-			{
-				config.copyFromFile(new File(this.getClass().getResource("config.cth").toURI()));
-			}
-			catch (Exception e)
-			{
-				log.severe("Could not copy default config, creating an empty config");
-				config.create();
-				config.set("motd", "A Minecraft Server");
-				config.set("check-server-peek", false);
-				config.set("motd", "A Minecraft Server");
-				config.set("default-chat-format", "<{displayname}> {message}");
-			}
+			dev.create();
+			dev.set("ship-location", "C:\\Users\\Akoot\\Documents\\GitHub\\Cthulhu-Bukkit\\ship.bat");
 		}
 
-		//		if(!config.exists())
-		//		{
-		//			config.create();
-		//			config.addComment("Welcome to the config!");
-		//			config.addComment("The prefix you wish to use for (most) plugin messages");
-		//			config.set("prefix", "&7[&aServer&7]");
-		//			config.addComment("Default chat format for players who do not have a custom chat format.");
-		//			config.set("default-chat-format", "<{displayname}> {message}");
-		//			config.addComment("MOTD shown before joining the server (server browser)");
-		//			config.set("motd", "&aA Minecraft Server");
-		//			config.set("check-server-peek", false);
-		//			config.set("xp-orb", "xp orb");
-		//			config.set("lockpick", "Lockpick");
-		//		}
+		if(!config.exists())
+		{
+			config.create();
+			config.set("motd", "A Minecraft Server");
+			config.set("check-server-peek", false);
+			config.set("motd", "A Minecraft Server");
+			config.set("default-chat-format", "<{displayname}> {message}");
+			config.set("enable-playtime", true);
+			config.set("join-message", "&e{name} has joined the game");
+			config.set("quit-message", "&e{name} has left the game");
+			config.set("max-players", 30);
+		}
 	}
 
 	public Player getPlayer(String find)
